@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -15,9 +14,35 @@ const userData = {
     email: 'sarah.johnson@email.com',
     joinDate: 'March 2024',
     profilePicture: 'https://readdy.ai/api/search-image?query=professional%20woman%20smiling%20portrait%20photo%20headshot%20clean%20white%20background%20business%20casual%20attire%20confident%20friendly%20expression%20natural%20lighting%20high%20quality%20photography%20modern%20professional&width=200&height=200&seq=profile001&orientation=squarish',
-    accountExpiry: 12, // days remaining
     totalCourses: 4,
-    completedCourses: 1
+    completedCourses: 1,
+    // Subscription data for different language packages
+    subscriptions: {
+        english: {
+            active: true,
+            expiryDays: 12,
+            packageName: 'English Premium',
+            startDate: 'March 2024'
+        },
+        japanese: {
+            active: true,
+            expiryDays: 5,
+            packageName: 'Japanese Basic',
+            startDate: 'April 2024'
+        },
+        spanish: {
+            active: false,
+            expiryDays: 0,
+            packageName: 'Spanish Complete',
+            startDate: null
+        },
+        french: {
+            active: false,
+            expiryDays: 0,
+            packageName: 'French Advanced',
+            startDate: null
+        }
+    }
 };
 
 // Mock courses data
@@ -29,7 +54,8 @@ const enrolledCourses = [
         progress: 75,
         description: 'Master everyday English conversations with confidence',
         lastAccessed: '2 hours ago',
-        status: 'active'
+        status: 'active',
+        language: 'english'
     },
     {
         id: 2,
@@ -38,7 +64,8 @@ const enrolledCourses = [
         progress: 45,
         description: 'Learn fundamental Japanese grammar and vocabulary',
         lastAccessed: '1 day ago',
-        status: 'active'
+        status: 'active',
+        language: 'japanese'
     },
     {
         id: 3,
@@ -47,7 +74,8 @@ const enrolledCourses = [
         progress: 100,
         description: 'Complete guide to Spanish grammar rules',
         lastAccessed: '3 days ago',
-        status: 'completed'
+        status: 'completed',
+        language: 'spanish'
     },
     {
         id: 4,
@@ -56,7 +84,8 @@ const enrolledCourses = [
         progress: 20,
         description: 'Perfect your French accent and pronunciation',
         lastAccessed: '1 week ago',
-        status: 'paused'
+        status: 'paused',
+        language: 'french'
     }
 ];
 
@@ -130,7 +159,6 @@ export default function UserProfile() {
         };
     }, []);
 
-
     const getProgressColor = (progress: number) => {
         if (progress === 100) return 'bg-emerald-500';
         if (progress >= 75) return 'bg-blue-500';
@@ -149,6 +177,30 @@ export default function UserProfile() {
         if (status === 'paused') return 'Paused';
         return 'Active';
     };
+
+    const getLanguageFlag = (language: string) => {
+        const flags = {
+            english: '🇺🇸',
+            japanese: '🇯🇵',
+            spanish: '🇪🇸',
+            french: '🇫🇷'
+        };
+        return flags[language as keyof typeof flags] || '🌐';
+    };
+
+    const getLanguageName = (language: string) => {
+        const names = {
+            english: 'English',
+            japanese: 'Japanese',
+            spanish: 'Spanish',
+            french: 'French'
+        };
+        return names[language as keyof typeof names] || language;
+    };
+
+    // Get active subscriptions
+    const activeSubscriptions = Object.entries(userData.subscriptions).filter(([, sub]) => sub.active);
+    const expiringSoon = activeSubscriptions.filter(([, sub]) => sub.expiryDays <= 7);
 
     return (
         <main className="pt-20 pb-12">
@@ -181,7 +233,7 @@ export default function UserProfile() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Left Column - Profile Info & Account Status */}
+                    {/* Left Column - Profile Info & Subscription Status */}
                     <div className="lg:col-span-1 space-y-6">
                         {/* Profile Card */}
                         <Fade in={visibleSections.profile} timeout={1000}>
@@ -223,54 +275,80 @@ export default function UserProfile() {
                             </Box>
                         </Fade>
 
-                        {/* Account Validity Card */}
+                        {/* Subscription Status Card */}
                         <Fade in={visibleSections.validity} timeout={1000}>
                             <Box ref={validityRef}>
-                                <div className={`bg-white rounded-2xl shadow-md p-6 ${userData.accountExpiry <= 5 ? 'ring-2 ring-amber-200' : ''}`}>
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h2 className="text-xl font-semibold text-gray-900">Account Status</h2>
-                                        <div className={`w-3 h-3 rounded-full ${userData.accountExpiry <= 5 ? 'bg-amber-400' : 'bg-emerald-400'}`}></div>
+                                <div className={`bg-white rounded-2xl shadow-md p-6 ${expiringSoon.length > 0 ? 'ring-2 ring-amber-200' : ''}`}>
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h2 className="text-xl font-semibold text-gray-900">Subscription Status</h2>
+                                        <div className={`w-3 h-3 rounded-full ${expiringSoon.length > 0 ? 'bg-amber-400' : activeSubscriptions.length > 0 ? 'bg-emerald-400' : 'bg-gray-400'}`}></div>
                                     </div>
 
                                     <div className="space-y-4">
-                                        <div>
-                                            <p className="text-sm text-gray-600 mb-1">Status</p>
-                                            <p className="font-semibold text-emerald-600">Active Account</p>
-                                        </div>
+                                        {/* Active Subscriptions */}
+                                        {activeSubscriptions.length > 0 ? (
+                                            <div className="space-y-3">
+                                                {activeSubscriptions.map(([language, subscription]) => (
+                                                    <div key={language} className={`border rounded-xl p-4 ${subscription.expiryDays <= 7 ? 'border-amber-200 bg-amber-50' : 'border-gray-200 bg-gray-50'}`}>
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-lg">{getLanguageFlag(language)}</span>
+                                                                <span className="font-semibold text-gray-900">{getLanguageName(language)}</span>
+                                                            </div>
+                                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${subscription.expiryDays <= 7 ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}`}>
+                                                                {subscription.expiryDays <= 7 ? 'Expiring Soon' : 'Active'}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-sm text-gray-600 mb-1">{subscription.packageName}</p>
+                                                        <p className={`text-sm font-medium ${subscription.expiryDays <= 7 ? 'text-amber-600' : 'text-gray-700'}`}>
+                                                            {subscription.expiryDays} days remaining
+                                                        </p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="text-center py-4">
+                                                <p className="text-gray-600">No active subscriptions</p>
+                                            </div>
+                                        )}
 
-                                        <div>
-                                            <p className="text-sm text-gray-600 mb-1">Validity</p>
-                                            <p className={`font-semibold ${userData.accountExpiry <= 5 ? 'text-amber-600' : 'text-gray-900'}`}>
-                                                {userData.accountExpiry} days remaining
-                                            </p>
-                                        </div>
-
-                                        {userData.accountExpiry <= 5 && (
+                                        {/* Expiring Soon Warning */}
+                                        {expiringSoon.length > 0 && (
                                             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
                                                 <p className="text-amber-800 text-sm font-medium mb-2">
                                                     <i className="ri-alert-line mr-1"></i>
-                                                    Account expiring soon
+                                                    {expiringSoon.length === 1 ? 'Subscription expiring soon' : 'Multiple subscriptions expiring soon'}
                                                 </p>
                                                 <p className="text-amber-700 text-sm mb-3">
-                                                    Your account will expire in {userData.accountExpiry} days. Renew now to continue learning.
+                                                    {expiringSoon.length === 1 
+                                                        ? `Your ${getLanguageName(expiringSoon[0][0])} subscription will expire in ${expiringSoon[0][1].expiryDays} days.`
+                                                        : `You have ${expiringSoon.length} subscriptions expiring within 7 days.`
+                                                    } Renew now to continue learning.
                                                 </p>
                                                 <Link
                                                     href="/pricing"
                                                     className="inline-block bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors whitespace-nowrap"
                                                 >
-                                                    Renew Now
+                                                    Renew Subscriptions
                                                 </Link>
                                             </div>
                                         )}
 
-                                        {userData.accountExpiry > 5 && (
+                                        {/* Action Buttons */}
+                                        <div className="flex flex-col gap-2 pt-2">
                                             <Link
                                                 href="/pricing"
                                                 className="inline-block w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl text-center font-medium transition-colors whitespace-nowrap"
                                             >
-                                                Extend Subscription
+                                                Manage Subscriptions
                                             </Link>
-                                        )}
+                                            <Link
+                                                href="/pricing"
+                                                className="inline-block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-xl text-center font-medium transition-colors whitespace-nowrap"
+                                            >
+                                                Add New Language
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div>
                             </Box>
@@ -295,61 +373,78 @@ export default function UserProfile() {
 
                                     {enrolledCourses.length > 0 ? (
                                         <div className="space-y-4">
-                                            {enrolledCourses.map((course) => (
-                                                <div key={course.id} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
-                                                    <div className="flex items-start justify-between mb-4">
-                                                        <div className="flex-1">
-                                                            <div className="flex items-center gap-3 mb-2">
-                                                                <h3 className="text-lg font-semibold text-gray-900">{course.title}</h3>
-                                                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(course.status, course.progress)}`}>
-                                                                    {getStatusText(course.status, course.progress)}
-                                                                </span>
+                                            {enrolledCourses.map((course) => {
+                                                const hasActiveSubscription = userData.subscriptions[course.language as keyof typeof userData.subscriptions]?.active;
+                                                
+                                                return (
+                                                    <div key={course.id} className={`border rounded-xl p-6 hover:shadow-md transition-shadow ${!hasActiveSubscription ? 'opacity-75 border-gray-300' : 'border-gray-200'}`}>
+                                                        <div className="flex items-start justify-between mb-4">
+                                                            <div className="flex-1">
+                                                                <div className="flex items-center gap-3 mb-2">
+                                                                    <span className="text-lg">{getLanguageFlag(course.language)}</span>
+                                                                    <h3 className="text-lg font-semibold text-gray-900">{course.title}</h3>
+                                                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(course.status, course.progress)}`}>
+                                                                        {getStatusText(course.status, course.progress)}
+                                                                    </span>
+                                                                    {!hasActiveSubscription && (
+                                                                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                                            Subscription Expired
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                                <p className="text-gray-600 mb-2">{course.description}</p>
+                                                                <div className="flex items-center gap-4 text-sm text-gray-500">
+                                                                    <span className="bg-gray-100 px-3 py-1 rounded-full">{course.level}</span>
+                                                                    <span>Last accessed {course.lastAccessed}</span>
+                                                                </div>
                                                             </div>
-                                                            <p className="text-gray-600 mb-2">{course.description}</p>
-                                                            <div className="flex items-center gap-4 text-sm text-gray-500">
-                                                                <span className="bg-gray-100 px-3 py-1 rounded-full">{course.level}</span>
-                                                                <span>Last accessed {course.lastAccessed}</span>
+                                                        </div>
+
+                                                        <div className="mb-4">
+                                                            <div className="flex items-center justify-between mb-2">
+                                                                <span className="text-sm font-medium text-gray-700">Progress</span>
+                                                                <span className="text-sm font-medium text-gray-900">{course.progress}%</span>
+                                                            </div>
+                                                            <div className="w-full bg-gray-200 rounded-full h-2">
+                                                                <div
+                                                                    className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(course.progress)}`}
+                                                                    style={{ width: `${course.progress}%` }}
+                                                                ></div>
                                                             </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div className="mb-4">
-                                                        <div className="flex items-center justify-between mb-2">
-                                                            <span className="text-sm font-medium text-gray-700">Progress</span>
-                                                            <span className="text-sm font-medium text-gray-900">{course.progress}%</span>
+                                                        <div className="flex flex-col sm:flex-row gap-3 w-full">
+                                                            {!hasActiveSubscription ? (
+                                                                <Link
+                                                                    href="/pricing"
+                                                                    className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-xl font-medium transition-colors whitespace-nowrap w-full sm:w-auto"
+                                                                >
+                                                                    Renew to Continue
+                                                                </Link>
+                                                            ) : course.progress === 100 ? (
+                                                                <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-xl font-medium transition-colors whitespace-nowrap w-full sm:w-auto">
+                                                                    <i className="ri-check-line mr-2"></i>
+                                                                    Completed
+                                                                </button>
+                                                            ) : (
+                                                                <Link
+                                                                    href={`/courses/${course.id}`}
+                                                                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-medium transition-colors whitespace-nowrap w-full sm:w-auto"
+                                                                >
+                                                                    Continue Learning
+                                                                </Link>
+                                                            )}
+
+                                                            {hasActiveSubscription && course.status === 'paused' && (
+                                                                <button className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-xl font-medium transition-colors whitespace-nowrap w-full sm:w-auto">
+                                                                    Resume Course
+                                                                </button>
+                                                            )}
                                                         </div>
-                                                        <div className="w-full bg-gray-200 rounded-full h-2">
-                                                            <div
-                                                                className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(course.progress)}`}
-                                                                style={{ width: `${course.progress}%` }}
-                                                            ></div>
-                                                        </div>
+
                                                     </div>
-
-                                                    <div className="flex flex-col sm:flex-row gap-3 w-full">
-                                                        {course.progress === 100 ? (
-                                                            <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-xl font-medium transition-colors whitespace-nowrap w-full sm:w-auto">
-                                                                <i className="ri-check-line mr-2"></i>
-                                                                Completed
-                                                            </button>
-                                                        ) : (
-                                                            <Link
-                                                                href={`/courses/${course.id}`}
-                                                                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-medium transition-colors whitespace-nowrap w-full sm:w-auto"
-                                                            >
-                                                                Continue Learning
-                                                            </Link>
-                                                        )}
-
-                                                        {course.status === 'paused' && (
-                                                            <button className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-xl font-medium transition-colors whitespace-nowrap w-full sm:w-auto">
-                                                                Resume Course
-                                                            </button>
-                                                        )}
-                                                    </div>
-
-                                                </div>
-                                            ))}
+                                                );
+                                            })}
                                         </div>
                                     ) : (
                                         <div className="text-center py-12">

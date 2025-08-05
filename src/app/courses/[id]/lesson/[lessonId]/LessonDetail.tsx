@@ -171,14 +171,80 @@ export default function LessonDetail({ courseId, lessonId }: LessonDetailProps) 
 
   if (!lesson) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-blue-50 flex items-center justify-center">
-        <Card className="p-8 text-center">
-          <Typography variant="h5" className="mb-4">Lesson Not Found</Typography>
-          <Link href={`/courses/${courseId}`}>
-            <Button variant="contained" color="primary">
-              Back to Course
-            </Button>
-          </Link>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50 flex items-center justify-center p-4">
+        <Card className="max-w-md w-full bg-white/80 backdrop-blur-sm shadow-xl border-0 overflow-hidden">
+          <div className="relative p-8 text-center">
+            {/* Decorative background elements */}
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-green-400/20 to-emerald-500/20 rounded-full blur-xl"></div>
+            <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-blue-400/20 to-cyan-500/20 rounded-full blur-lg"></div>
+
+            {/* Success icon */}
+            <div className="mb-6 flex justify-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                <svg
+                  className="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            {/* Main content */}
+            <Typography
+              variant="h4"
+              className="mb-3 bg-gradient-to-r from-slate-700 to-slate-900 bg-clip-text text-transparent font-bold"
+            >
+              Congratulations!
+            </Typography>
+
+            <Typography
+              variant="h6"
+              className="mb-6 text-slate-600 font-medium"
+            >
+              All Lessons Have Been Completed
+            </Typography>
+
+            <Typography
+              variant="body1"
+              className="mb-8 text-slate-500 leading-relaxed"
+            >
+              You've successfully finished all the lessons in this course. Great job on your learning journey!
+            </Typography>
+
+            {/* Action button */}
+            <Link href={`/courses/${courseId}`}>
+              <Button
+                variant="contained"
+                size="large"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 px-8 py-3 rounded-xl font-semibold"
+                startIcon={
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                }
+              >
+                Back to Course
+              </Button>
+            </Link>
+          </div>
         </Card>
       </div>
     );
