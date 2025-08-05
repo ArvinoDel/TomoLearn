@@ -219,7 +219,7 @@ export default function CommunityPage() {
                 onClick={handleJoinWhatsApp}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
-                className="inline-flex items-center px-8 py-4 bg-[#25D366] text-white font-semibold rounded-2xl hover:bg-[#22c55e] transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer whitespace-nowrap"
+                className="inline-flex items-center lg:px-8 px-4 py-4 bg-[#25D366] text-white font-semibold rounded-2xl hover:bg-[#22c55e] transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer whitespace-nowrap"
               >
                 <div className="w-6 h-6 mr-3 flex items-center justify-center">
                   <i className="ri-whatsapp-fill text-xl"></i>
