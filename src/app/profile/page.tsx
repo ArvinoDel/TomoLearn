@@ -1,0 +1,408 @@
+
+'use client';
+
+import { useState, useRef, useEffect } from 'react';
+import { Fade, Box } from '@mui/material';
+import { User } from 'lucide-react';
+import Link from 'next/link';
+
+const sectionKeys = ['profile', 'validity', 'courses', 'stats'] as const;
+type SectionKey = typeof sectionKeys[number];
+
+// Mock user data
+const userData = {
+    name: 'Sarah Johnson',
+    email: 'sarah.johnson@email.com',
+    joinDate: 'March 2024',
+    profilePicture: 'https://readdy.ai/api/search-image?query=professional%20woman%20smiling%20portrait%20photo%20headshot%20clean%20white%20background%20business%20casual%20attire%20confident%20friendly%20expression%20natural%20lighting%20high%20quality%20photography%20modern%20professional&width=200&height=200&seq=profile001&orientation=squarish',
+    accountExpiry: 12, // days remaining
+    totalCourses: 4,
+    completedCourses: 1
+};
+
+// Mock courses data
+const enrolledCourses = [
+    {
+        id: 1,
+        title: 'English Conversation Mastery',
+        level: 'Intermediate',
+        progress: 75,
+        description: 'Master everyday English conversations with confidence',
+        lastAccessed: '2 hours ago',
+        status: 'active'
+    },
+    {
+        id: 2,
+        title: 'Japanese for Beginners',
+        level: 'Beginner',
+        progress: 45,
+        description: 'Learn fundamental Japanese grammar and vocabulary',
+        lastAccessed: '1 day ago',
+        status: 'active'
+    },
+    {
+        id: 3,
+        title: 'Spanish Grammar Fundamentals',
+        level: 'Beginner',
+        progress: 100,
+        description: 'Complete guide to Spanish grammar rules',
+        lastAccessed: '3 days ago',
+        status: 'completed'
+    },
+    {
+        id: 4,
+        title: 'French Pronunciation Workshop',
+        level: 'Advanced',
+        progress: 20,
+        description: 'Perfect your French accent and pronunciation',
+        lastAccessed: '1 week ago',
+        status: 'paused'
+    }
+];
+
+export default function UserProfile() {
+    const [activeTab, setActiveTab] = useState('overview');
+
+    // Separate visibility states for each section
+    const [visibleSections, setVisibleSections] = useState({
+        profile: false,
+        validity: false,
+        courses: false,
+        stats: false,
+    });
+
+    // Separate refs for each section
+    const profileRef = useRef<HTMLDivElement | null>(null);
+    const validityRef = useRef<HTMLDivElement | null>(null);
+    const coursesRef = useRef<HTMLDivElement | null>(null);
+    const statsRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        // Create intersection observer for each section
+        const createObserver = (ref: React.RefObject<HTMLDivElement>, sectionName: string) => {
+            return new IntersectionObserver(
+                ([entry]) => {
+                    if (entry.isIntersecting) {
+                        setVisibleSections(prev => ({
+                            ...prev,
+                            [sectionName]: true
+                        }));
+                    }
+                },
+                {
+                    threshold: 0.2, // Trigger when 20% of element is visible
+                    rootMargin: '-50px 0px' // Add some margin for better timing
+                }
+            );
+        };
+
+        const sectionRefs = {
+            profile: profileRef,
+            validity: validityRef,
+            courses: coursesRef,
+            stats: statsRef
+        };
+
+        const observers = Object.entries(sectionRefs)
+            .filter(([, ref]) => ref.current !== null)
+            .map(([name, ref]) => ({
+                ref,
+                name,
+                observer: createObserver(ref as React.RefObject<HTMLDivElement>, name)
+            }));
+
+
+        // Start observing each element
+        observers.forEach(({ ref, observer }) => {
+            if (ref.current) {
+                observer.observe(ref.current);
+            }
+        });
+
+        // Cleanup function
+        return () => {
+            observers.forEach(({ ref, observer }) => {
+                if (ref.current) {
+                    observer.unobserve(ref.current);
+                }
+                observer.disconnect();
+            });
+        };
+    }, []);
+
+
+    const getProgressColor = (progress: number) => {
+        if (progress === 100) return 'bg-emerald-500';
+        if (progress >= 75) return 'bg-blue-500';
+        if (progress >= 50) return 'bg-yellow-500';
+        return 'bg-gray-400';
+    };
+
+    const getStatusBadge = (status: string, progress: number) => {
+        if (progress === 100) return 'bg-emerald-100 text-emerald-800';
+        if (status === 'paused') return 'bg-orange-100 text-orange-800';
+        return 'bg-blue-100 text-blue-800';
+    };
+
+    const getStatusText = (status: string, progress: number) => {
+        if (progress === 100) return 'Completed';
+        if (status === 'paused') return 'Paused';
+        return 'Active';
+    };
+
+    return (
+        <main className="pt-20 pb-12">
+            <div className="max-w-6xl mx-auto px-6 md:px-12">
+                {/* Page Header */}
+                <div className="relative mb-8 overflow-hidden rounded-2xl">
+                    {/* Background gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-600"></div>
+
+                    {/* Decorative blur */}
+                    <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-24 translate-x-24 blur-2xl"></div>
+
+                    {/* Content */}
+                    <div className="relative px-6 py-8 text-white">
+                        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 mb-4 text-center sm:text-left">
+
+                            {/* Icon User */}
+                            <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
+                                <User size={24} className="text-white" />
+                            </div>
+
+                            {/* Text Section */}
+                            <div>
+                                <h1 className="text-3xl font-bold mb-1">My Profile</h1>
+                                <p className="text-cyan-50/90">Manage your account and track your learning progress</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Left Column - Profile Info & Account Status */}
+                    <div className="lg:col-span-1 space-y-6">
+                        {/* Profile Card */}
+                        <Fade in={visibleSections.profile} timeout={1000}>
+                            <Box ref={profileRef}>
+                                <div className="bg-white rounded-2xl shadow-md p-6">
+                                    <div className="flex items-start justify-between mb-6">
+                                        <h2 className="text-xl font-semibold text-gray-900">Profile Information</h2>
+                                        <button className="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors whitespace-nowrap">
+                                            Edit Profile
+                                        </button>
+                                    </div>
+
+                                    <div className="flex flex-col items-center text-center">
+                                        <div className="w-24 h-24 rounded-full overflow-hidden mb-4 ring-4 ring-blue-50">
+                                            <img
+                                                src={userData.profilePicture}
+                                                alt="Profile"
+                                                className="w-full h-full object-cover object-top"
+                                            />
+                                        </div>
+                                        <h3 className="text-xl font-semibold text-gray-900 mb-1">{userData.name}</h3>
+                                        <p className="text-gray-600 mb-2">{userData.email}</p>
+                                        <p className="text-sm text-gray-500">Member since {userData.joinDate}</p>
+                                    </div>
+
+                                    <div className="mt-6 pt-6 border-t border-gray-100">
+                                        <div className="grid grid-cols-2 gap-4 text-center">
+                                            <div>
+                                                <p className="text-2xl font-bold text-blue-600">{userData.totalCourses}</p>
+                                                <p className="text-sm text-gray-600">Total Courses</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-2xl font-bold text-emerald-600">{userData.completedCourses}</p>
+                                                <p className="text-sm text-gray-600">Completed</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Box>
+                        </Fade>
+
+                        {/* Account Validity Card */}
+                        <Fade in={visibleSections.validity} timeout={1000}>
+                            <Box ref={validityRef}>
+                                <div className={`bg-white rounded-2xl shadow-md p-6 ${userData.accountExpiry <= 5 ? 'ring-2 ring-amber-200' : ''}`}>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h2 className="text-xl font-semibold text-gray-900">Account Status</h2>
+                                        <div className={`w-3 h-3 rounded-full ${userData.accountExpiry <= 5 ? 'bg-amber-400' : 'bg-emerald-400'}`}></div>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div>
+                                            <p className="text-sm text-gray-600 mb-1">Status</p>
+                                            <p className="font-semibold text-emerald-600">Active Account</p>
+                                        </div>
+
+                                        <div>
+                                            <p className="text-sm text-gray-600 mb-1">Validity</p>
+                                            <p className={`font-semibold ${userData.accountExpiry <= 5 ? 'text-amber-600' : 'text-gray-900'}`}>
+                                                {userData.accountExpiry} days remaining
+                                            </p>
+                                        </div>
+
+                                        {userData.accountExpiry <= 5 && (
+                                            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                                                <p className="text-amber-800 text-sm font-medium mb-2">
+                                                    <i className="ri-alert-line mr-1"></i>
+                                                    Account expiring soon
+                                                </p>
+                                                <p className="text-amber-700 text-sm mb-3">
+                                                    Your account will expire in {userData.accountExpiry} days. Renew now to continue learning.
+                                                </p>
+                                                <Link
+                                                    href="/pricing"
+                                                    className="inline-block bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors whitespace-nowrap"
+                                                >
+                                                    Renew Now
+                                                </Link>
+                                            </div>
+                                        )}
+
+                                        {userData.accountExpiry > 5 && (
+                                            <Link
+                                                href="/pricing"
+                                                className="inline-block w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl text-center font-medium transition-colors whitespace-nowrap"
+                                            >
+                                                Extend Subscription
+                                            </Link>
+                                        )}
+                                    </div>
+                                </div>
+                            </Box>
+                        </Fade>
+                    </div>
+
+                    {/* Right Column - Courses */}
+                    <div className="lg:col-span-2">
+
+                        <Fade in={visibleSections.courses} timeout={1000}>
+                            <Box ref={coursesRef}>
+                                <div className="bg-white rounded-2xl shadow-md p-6">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h2 className="text-xl font-semibold text-gray-900">My Courses</h2>
+                                        <Link
+                                            href="/courses"
+                                            className="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors whitespace-nowrap"
+                                        >
+                                            Browse All Courses
+                                        </Link>
+                                    </div>
+
+                                    {enrolledCourses.length > 0 ? (
+                                        <div className="space-y-4">
+                                            {enrolledCourses.map((course) => (
+                                                <div key={course.id} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
+                                                    <div className="flex items-start justify-between mb-4">
+                                                        <div className="flex-1">
+                                                            <div className="flex items-center gap-3 mb-2">
+                                                                <h3 className="text-lg font-semibold text-gray-900">{course.title}</h3>
+                                                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(course.status, course.progress)}`}>
+                                                                    {getStatusText(course.status, course.progress)}
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-gray-600 mb-2">{course.description}</p>
+                                                            <div className="flex items-center gap-4 text-sm text-gray-500">
+                                                                <span className="bg-gray-100 px-3 py-1 rounded-full">{course.level}</span>
+                                                                <span>Last accessed {course.lastAccessed}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="mb-4">
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <span className="text-sm font-medium text-gray-700">Progress</span>
+                                                            <span className="text-sm font-medium text-gray-900">{course.progress}%</span>
+                                                        </div>
+                                                        <div className="w-full bg-gray-200 rounded-full h-2">
+                                                            <div
+                                                                className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(course.progress)}`}
+                                                                style={{ width: `${course.progress}%` }}
+                                                            ></div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex flex-col sm:flex-row gap-3 w-full">
+                                                        {course.progress === 100 ? (
+                                                            <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-xl font-medium transition-colors whitespace-nowrap w-full sm:w-auto">
+                                                                <i className="ri-check-line mr-2"></i>
+                                                                Completed
+                                                            </button>
+                                                        ) : (
+                                                            <Link
+                                                                href={`/courses/${course.id}`}
+                                                                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-medium transition-colors whitespace-nowrap w-full sm:w-auto"
+                                                            >
+                                                                Continue Learning
+                                                            </Link>
+                                                        )}
+
+                                                        {course.status === 'paused' && (
+                                                            <button className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-xl font-medium transition-colors whitespace-nowrap w-full sm:w-auto">
+                                                                Resume Course
+                                                            </button>
+                                                        )}
+                                                    </div>
+
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="text-center py-12">
+                                            <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                <i className="ri-book-line text-3xl text-blue-500"></i>
+                                            </div>
+                                            <h3 className="text-lg font-semibold text-gray-900 mb-2">No courses enrolled yet</h3>
+                                            <p className="text-gray-600 mb-6">Start your learning journey by exploring our course catalog</p>
+                                            <Link
+                                                href="/courses"
+                                                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-colors whitespace-nowrap"
+                                            >
+                                                Explore Courses
+                                            </Link>
+                                        </div>
+                                    )}
+                                </div>
+                            </Box>
+                        </Fade>
+
+                        {/* Quick Stats */}
+                        <Fade in={visibleSections.stats} timeout={1000}>
+                            <Box ref={statsRef}>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                                    <div className="bg-white rounded-2xl shadow-md p-6 text-center">
+                                        <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                            <i className="ri-time-line text-xl text-blue-600"></i>
+                                        </div>
+                                        <p className="text-2xl font-bold text-gray-900 mb-1">127h</p>
+                                        <p className="text-sm text-gray-600">Total Study Time</p>
+                                    </div>
+
+                                    <div className="bg-white rounded-2xl shadow-md p-6 text-center">
+                                        <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                            <i className="ri-medal-line text-xl text-emerald-600"></i>
+                                        </div>
+                                        <p className="text-2xl font-bold text-gray-900 mb-1">8</p>
+                                        <p className="text-sm text-gray-600">Certificates Earned</p>
+                                    </div>
+
+                                    <div className="bg-white rounded-2xl shadow-md p-6 text-center">
+                                        <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                            <i className="ri-fire-line text-xl text-purple-600"></i>
+                                        </div>
+                                        <p className="text-2xl font-bold text-gray-900 mb-1">21</p>
+                                        <p className="text-sm text-gray-600">Day Streak</p>
+                                    </div>
+                                </div>
+                            </Box>
+                        </Fade>
+                    </div>
+                </div>
+            </div>
+        </main>
+    );
+}

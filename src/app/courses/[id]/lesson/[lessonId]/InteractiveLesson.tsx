@@ -1,0 +1,248 @@
+
+'use client';
+
+import { useState, useRef } from 'react';
+import { Card, CardContent, Typography, Button, Chip, Paper, Box } from '@mui/material';
+import { Check as CheckIcon, Refresh as RefreshIcon } from '@mui/icons-material';
+
+interface InteractiveLessonProps {
+  lesson: {
+    content: {
+      characters: Array<{
+        char: string;
+        romaji: string;
+        stroke: string;
+        meaning: string;
+      }>;
+    };
+  };
+  onProgressUpdate: (progress: number) => void;
+}
+
+export default function InteractiveLesson({ lesson, onProgressUpdate }: InteractiveLessonProps) {
+  const [currentCharIndex, setCurrentCharIndex] = useState(0);
+  const [completedChars, setCompletedChars] = useState<boolean[]>(new Array(lesson.content.characters.length).fill(false));
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [paths, setPaths] = useState<string[]>([]);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [lastPoint, setLastPoint] = useState<{ x: number; y: number } | null>(null);
+
+  const currentChar = lesson.content.characters[currentCharIndex];
+
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    setIsDrawing(true);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    
+    setLastPoint({ x, y });
+    
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+    }
+  };
+
+  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawing || !canvasRef.current || !lastPoint) return;
+    
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    }
+    
+    setLastPoint({ x, y });
+  };
+
+  const stopDrawing = () => {
+    setIsDrawing(false);
+    setLastPoint(null);
+  };
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+    setPaths([]);
+  };
+
+  const markComplete = () => {
+    const newCompleted = [...completedChars];
+    newCompleted[currentCharIndex] = true;
+    setCompletedChars(newCompleted);
+    
+    const progress = (newCompleted.filter(Boolean).length / lesson.content.characters.length) * 100;
+    onProgressUpdate(progress);
+  };
+
+  const nextCharacter = () => {
+    if (currentCharIndex < lesson.content.characters.length - 1) {
+      setCurrentCharIndex(currentCharIndex + 1);
+      clearCanvas();
+    }
+  };
+
+  const prevCharacter = () => {
+    if (currentCharIndex > 0) {
+      setCurrentCharIndex(currentCharIndex - 1);
+      clearCanvas();
+    }
+  };
+
+  return (
+    <div className="grid lg:grid-cols-2 gap-8">
+      {/* Character Display */}
+      <Card className="rounded-2xl shadow-lg">
+        <CardContent className="p-8">
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <Chip 
+                label={`${currentCharIndex + 1} / ${lesson.content.characters.length}`}
+                className="bg-blue-100 text-blue-700 font-semibold"
+              />
+              {completedChars[currentCharIndex] && (
+                <Chip 
+                  icon={<CheckIcon />}
+                  label="Completed"
+                  className="bg-green-100 text-green-700 font-semibold"
+                />
+              )}
+            </div>
+            
+            {/* Large Character Display */}
+            <div className="w-48 h-48 mx-auto bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl flex items-center justify-center mb-6 shadow-inner">
+              <span className="text-8xl font-light text-slate-800 select-none">
+                {currentChar.char}
+              </span>
+            </div>
+
+            {/* Character Info */}
+            <div className="space-y-4">
+              <div className="bg-slate-50 rounded-xl p-4">
+                <Typography variant="h5" className="font-bold text-slate-900 mb-2">
+                  {currentChar.romaji}
+                </Typography>
+                <Typography variant="body1" className="text-slate-600">
+                  {currentChar.meaning}
+                </Typography>
+              </div>
+              
+              <div className="flex items-center justify-center gap-2">
+                <span className="text-2xl">✍️</span>
+                <Typography variant="body2" className="text-slate-500">
+                  {currentChar.stroke}
+                </Typography>
+              </div>
+            </div>
+          </div>
+
+          {/* Navigation Buttons */}
+          <div className="flex justify-between items-center">
+            <Button 
+              variant="outlined" 
+              onClick={prevCharacter}
+              disabled={currentCharIndex === 0}
+              className="rounded-xl"
+            >
+              Previous
+            </Button>
+            
+            {!completedChars[currentCharIndex] ? (
+              <Button 
+                variant="contained" 
+                onClick={markComplete}
+                className="bg-green-600 hover:bg-green-700 rounded-xl px-6"
+              >
+                Mark Complete
+              </Button>
+            ) : (
+              <Button 
+                variant="contained" 
+                onClick={nextCharacter}
+                disabled={currentCharIndex === lesson.content.characters.length - 1}
+                className="bg-blue-600 hover:bg-blue-700 rounded-xl px-6"
+              >
+                Next Character
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Practice Canvas */}
+      <Card className="rounded-2xl shadow-lg">
+        <CardContent className="p-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">🎨</span>
+              <Typography variant="h6" className="font-bold text-slate-900">
+                Practice Writing
+              </Typography>
+            </div>
+            <Button 
+              variant="outlined" 
+              startIcon={<RefreshIcon />}
+              onClick={clearCanvas}
+              className="rounded-xl"
+            >
+              Clear
+            </Button>
+          </div>
+
+          {/* Canvas */}
+          <Paper className="p-4 bg-gray-50 rounded-xl">
+            <canvas
+              ref={canvasRef}
+              width={400}
+              height={400}
+              className="w-full h-80 bg-white rounded-xl border-2 border-dashed border-gray-300 cursor-crosshair touch-none"
+              onMouseDown={startDrawing}
+              onMouseMove={draw}
+              onMouseUp={stopDrawing}
+              onMouseLeave={stopDrawing}
+              onTouchStart={startDrawing}
+              onTouchMove={draw}
+              onTouchEnd={stopDrawing}
+              style={{
+                touchAction: 'none'
+              }}
+            />
+            <Typography variant="body2" className="text-center text-slate-500 mt-4">
+              Draw the character <strong>{currentChar.char}</strong> in the canvas above
+            </Typography>
+          </Paper>
+
+          {/* Practice Tips */}
+          <div className="mt-6 p-4 bg-blue-50 rounded-xl">
+            <Typography variant="subtitle2" className="font-semibold text-blue-900 mb-2">
+              💡 Writing Tips
+            </Typography>
+            <ul className="text-sm text-blue-800 space-y-1">
+              <li>• Follow the stroke order for proper character formation</li>
+              <li>• Take your time to practice each stroke carefully</li>
+              <li>• Repeat multiple times for muscle memory</li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
