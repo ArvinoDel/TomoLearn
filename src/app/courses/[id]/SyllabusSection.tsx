@@ -2,6 +2,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Accordion, AccordionSummary, AccordionDetails, LinearProgress, Chip } from '@mui/material';
 import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 
@@ -46,6 +48,10 @@ export default function SyllabusSection({ course }: SyllabusSectionProps) {
     }
   };
 
+  const router = useRouter();
+  const pathname = usePathname();
+
+
   return (
     <section className="py-16 px-6 md:px-12 lg:px-16 bg-white">
       <div className="max-w-7xl mx-auto">
@@ -69,9 +75,9 @@ export default function SyllabusSection({ course }: SyllabusSectionProps) {
                     <span className="text-slate-600">Overall Completion</span>
                     <span className="font-semibold text-gray-900">8%</span>
                   </div>
-                  <LinearProgress 
-                    variant="determinate" 
-                    value={8} 
+                  <LinearProgress
+                    variant="determinate"
+                    value={8}
                     sx={{
                       height: 8,
                       borderRadius: 4,
@@ -83,7 +89,7 @@ export default function SyllabusSection({ course }: SyllabusSectionProps) {
                     }}
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
                     <div className="text-2xl font-bold text-cyan-600">2</div>
@@ -165,7 +171,7 @@ export default function SyllabusSection({ course }: SyllabusSectionProps) {
                         </p>
                       </div>
                     </div>
-                    
+
                     {week.week === 1 && (
                       <Chip
                         label="Current"
@@ -184,14 +190,18 @@ export default function SyllabusSection({ course }: SyllabusSectionProps) {
                   <div className="space-y-3">
                     {week.topics.map((topic: any, topicIndex: number) => (
                       <div
+                        onClick={() => {
+                          if (week.week === 1 && !pathname.includes('/lesson') && !topic.completed) {
+                            router.push(`${pathname}/lesson/1`);
+                          }
+                        }}
                         key={topicIndex}
-                        className={`flex items-center justify-between p-4 rounded-2xl border transition-all duration-200 ${
-                          topic.completed
-                            ? 'bg-green-50 border-green-200'
-                            : week.week === 1
+                        className={`flex items-center justify-between p-4 rounded-2xl border transition-all duration-200 ${week.week === 1 && !topic.completed && 'cursor-pointer'} ${topic.completed
+                          ? 'bg-green-50 border-green-200'
+                          : week.week === 1
                             ? 'bg-blue-50 border-blue-200 hover:bg-blue-100'
                             : 'bg-gray-50 border-gray-200'
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center gap-4">
                           <div className={`w-8 h-8 bg-gradient-to-br ${getTypeColor(topic.type)} rounded-full flex items-center justify-center`}>
@@ -199,7 +209,7 @@ export default function SyllabusSection({ course }: SyllabusSectionProps) {
                               <i className={`${getTypeIcon(topic.type)} text-white text-sm`}></i>
                             </div>
                           </div>
-                          
+
                           <div>
                             <h4 className="font-medium text-gray-900">{topic.title}</h4>
                             <div className="flex items-center gap-2 text-sm text-slate-600">

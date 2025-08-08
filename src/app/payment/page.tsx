@@ -36,9 +36,9 @@ export default function PaymentPage() {
     duration: "30 days unlimited access",
     userEmail: "user@example.com",
     invoiceNumber: "INV-2024-001234",
-    subtotal: 199000,
-    tax: 19900,
-    total: 218900
+    subtotal: 49000,
+    tax: 1000,
+    total: 50000
   };
 
   const handlePaymentMethodSelect = (method: string) => {

@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, Typography, Button, Chip, Paper, Box } from '@mui/material';
 import { Check as CheckIcon, Refresh as RefreshIcon } from '@mui/icons-material';
 
@@ -29,17 +28,50 @@ export default function InteractiveLesson({ lesson, onProgressUpdate }: Interact
 
   const currentChar = lesson.content.characters[currentCharIndex];
 
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    setIsDrawing(true);
+  // Setup canvas context when component mounts or canvas ref changes
+  useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        // Set canvas to actual display size
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        
+        // Configure drawing style
+        ctx.strokeStyle = '#374151';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.imageSmoothingEnabled = true;
+      }
+    }
+  }, []);
+
+  const getCanvasCoordinates = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
     
     const rect = canvas.getBoundingClientRect();
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
     
+    // Calculate coordinates relative to canvas
+    const x = (clientX - rect.left) * (canvas.width / rect.width);
+    const y = (clientY - rect.top) * (canvas.height / rect.height);
+    
+    return { x, y };
+  };
+
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    setIsDrawing(true);
+    
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const { x, y } = getCanvasCoordinates(e);
     setLastPoint({ x, y });
     
     const ctx = canvas.getContext('2d');
@@ -50,14 +82,11 @@ export default function InteractiveLesson({ lesson, onProgressUpdate }: Interact
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
     if (!isDrawing || !canvasRef.current || !lastPoint) return;
     
     const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
+    const { x, y } = getCanvasCoordinates(e);
     
     const ctx = canvas.getContext('2d');
     if (ctx) {
@@ -68,9 +97,21 @@ export default function InteractiveLesson({ lesson, onProgressUpdate }: Interact
     setLastPoint({ x, y });
   };
 
-  const stopDrawing = () => {
+  const stopDrawing = (e?: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (e) {
+      e.preventDefault();
+    }
     setIsDrawing(false);
     setLastPoint(null);
+    
+    // End the current path
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.closePath();
+      }
+    }
   };
 
   const clearCanvas = () => {
@@ -211,9 +252,11 @@ export default function InteractiveLesson({ lesson, onProgressUpdate }: Interact
           <Paper className="p-4 bg-gray-50 rounded-xl">
             <canvas
               ref={canvasRef}
-              width={400}
-              height={400}
-              className="w-full h-80 bg-white rounded-xl border-2 border-dashed border-gray-300 cursor-crosshair touch-none"
+              className="w-full h-80 bg-white rounded-xl border-2 border-dashed border-gray-300 touch-none"
+              style={{
+                touchAction: 'none',
+                cursor: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'20\' height=\'20\' viewBox=\'0 0 20 20\'%3E%3Cg transform=\'rotate(45 10 10)\'%3E%3Crect x=\'8\' y=\'2\' width=\'4\' height=\'14\' fill=\'%23f59e0b\'/%3E%3Crect x=\'8\' y=\'16\' width=\'4\' height=\'2\' fill=\'%23374151\'/%3E%3C/g%3E%3C/svg%3E") 10 10, pointer'
+              }}
               onMouseDown={startDrawing}
               onMouseMove={draw}
               onMouseUp={stopDrawing}
@@ -221,9 +264,6 @@ export default function InteractiveLesson({ lesson, onProgressUpdate }: Interact
               onTouchStart={startDrawing}
               onTouchMove={draw}
               onTouchEnd={stopDrawing}
-              style={{
-                touchAction: 'none'
-              }}
             />
             <Typography variant="body2" className="text-center text-slate-500 mt-4">
               Draw the character <strong>{currentChar.char}</strong> in the canvas above

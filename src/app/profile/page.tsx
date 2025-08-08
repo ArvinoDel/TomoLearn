@@ -357,7 +357,7 @@ export default function UserProfile() {
 
                     {/* Right Column - Courses */}
                     <div className="lg:col-span-2">
-
+                        
                         <Fade in={visibleSections.courses} timeout={1000}>
                             <Box ref={coursesRef}>
                                 <div className="bg-white rounded-2xl shadow-md p-4 sm:p-6">

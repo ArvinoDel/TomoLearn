@@ -16,6 +16,6 @@ export async function generateStaticParams() {
   ];
 }
 
-export default function LessonPage({ params }: { params: { id: string; lessonId: string } }) {
+export default async function LessonPage({ params }: { params: { id: string; lessonId: string } }) {
   return <LessonDetail courseId={params.id} lessonId={params.lessonId} />;
 }

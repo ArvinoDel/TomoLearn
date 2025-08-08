@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import { Chip, Button, Rating, IconButton, Tooltip } from '@mui/material';
+import Link from 'next/link';
 import {
   PlayArrow as PlayArrowIcon,
   Favorite as FavoriteIcon,
@@ -70,7 +71,7 @@ export default function CourseHero({ course }: CourseHeroProps) {
               <div className="flex items-center gap-2">
                 <Rating value={course.rating} precision={0.1} size="small" readOnly />
                 <span className="text-sm font-semibold text-gray-900">{course.rating}</span>
-                <span className="text-sm text-slate-600">({course.reviewCountFormatted = course.reviewCount.toLocaleString('en-US')
+                <span className="text-sm text-slate-600">({course.reviewCountFormatted = course.reviewCount.toLocaleString('id-ID')
                 } reviews)</span>
               </div>
               <div className="flex items-center gap-1 text-slate-600">
@@ -78,7 +79,7 @@ export default function CourseHero({ course }: CourseHeroProps) {
                   <i className="ri-user-line text-sm"></i>
                 </div>
                 <span className="text-sm">{
-                  course.studentCountFormatted = course.studentCount.toLocaleString('en-US')} students</span>
+                  course.studentCountFormatted = course.studentCount.toLocaleString('id-ID')} students</span>
               </div>
               <div className="flex items-center gap-1 text-slate-600">
                 <div className="w-4 h-4 flex items-center justify-center">
@@ -90,51 +91,55 @@ export default function CourseHero({ course }: CourseHeroProps) {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                variant="contained"
-                size="large"
-                startIcon={<PlayArrowIcon />}
-                sx={{
-                  backgroundColor: '#00BFCF',
-                  color: 'white',
-                  fontSize: '1.1rem',
-                  fontWeight: 600,
-                  padding: '12px 32px',
-                  borderRadius: '16px',
-                  textTransform: 'none',
-                  '&:hover': {
-                    backgroundColor: '#00a8b8',
-                    transform: 'scale(1.05)',
-                  },
-                  transition: 'all 0.3s ease',
-                }}
-                className="whitespace-nowrap"
-              >
-                Enroll Now - ${course.price}
-              </Button>
-
-              <Button
-                variant="outlined"
-                size="large"
-                sx={{
-                  color: '#00BFCF',
-                  borderColor: '#00BFCF',
-                  fontSize: '1.1rem',
-                  fontWeight: 600,
-                  padding: '12px 32px',
-                  borderRadius: '16px',
-                  textTransform: 'none',
-                  '&:hover': {
+              <Link href="/payment" passHref>
+                <Button
+                  variant="contained"
+                  size="large"
+                  startIcon={<PlayArrowIcon />}
+                  sx={{
                     backgroundColor: '#00BFCF',
                     color: 'white',
-                    transform: 'scale(1.05)',
-                  },
-                  transition: 'all 0.3s ease',
-                }}
-                className="whitespace-nowrap"
-              >
-                Start Free Trial
-              </Button>
+                    fontSize: '1.1rem',
+                    fontWeight: 600,
+                    padding: '12px 32px',
+                    borderRadius: '16px',
+                    textTransform: 'none',
+                    '&:hover': {
+                      backgroundColor: '#00a8b8',
+                      transform: 'scale(1.05)',
+                    },
+                    transition: 'all 0.3s ease',
+                  }}
+                  className="whitespace-nowrap"
+                >
+                  Enroll Now - ${course.price}
+                </Button>
+              </Link>
+
+              <Link href="/payment" passHref>
+                <Button
+                  variant="outlined"
+                  size="large"
+                  sx={{
+                    color: '#00BFCF',
+                    borderColor: '#00BFCF',
+                    fontSize: '1.1rem',
+                    fontWeight: 600,
+                    padding: '12px 32px',
+                    borderRadius: '16px',
+                    textTransform: 'none',
+                    '&:hover': {
+                      backgroundColor: '#00BFCF',
+                      color: 'white',
+                      transform: 'scale(1.05)',
+                    },
+                    transition: 'all 0.3s ease',
+                  }}
+                  className="whitespace-nowrap"
+                >
+                  Start Free Trial
+                </Button>
+              </Link>
             </div>
 
             {/* Quick Actions */}
@@ -197,7 +202,7 @@ export default function CourseHero({ course }: CourseHeroProps) {
               <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
                 <Button
                   variant="contained"
-                onClick={() => window.location.href = 'https://youtube.com'}
+                  onClick={() => window.location.href = 'https://youtube.com'}
                   size="large"
                   startIcon={<PlayArrowIcon />}
                   sx={{

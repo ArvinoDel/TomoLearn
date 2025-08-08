@@ -433,21 +433,28 @@ export default function CoursesPage() {
                         </div>
                       </div>
 
-                      {/* Progress Bar (for started courses) */}
-                      {course.isStarted && (
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-slate-600">Progress</span>
-                            <span className="font-medium text-gray-900">{course.progress}%</span>
+                      <div className="space-y-2 min-h-[60px] flex flex-col justify-center">
+                        {course.isStarted ? (
+                          <>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-slate-600">Progress</span>
+                              <span className="font-medium text-gray-900">{course.progress}%</span>
+                            </div>
+                            <div className="w-full bg-slate-200 rounded-full h-2">
+                              <div
+                                className="bg-gradient-to-r from-cyan-400 to-blue-500 h-2 rounded-full transition-all duration-500"
+                                style={{ width: `${course.progress}%` }}
+                              ></div>
+                            </div>
+                          </>
+                        ) : (
+                          // Placeholder for non-started courses
+                          <div className="text-center text-sm text-slate-500">
+                            <i className="ri-rocket-line text-2xl text-gray-300 mb-2 block"></i>
+                            <span>Ready to begin your journey</span>
                           </div>
-                          <div className="w-full bg-slate-200 rounded-full h-2">
-                            <div
-                              className="bg-gradient-to-r from-cyan-400 to-blue-500 h-2 rounded-full transition-all duration-500"
-                              style={{ width: `${course.progress}%` }}
-                            ></div>
-                          </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
 
                       {/* XP Display */}
                       <div className="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-cyan-50 rounded-xl border border-yellow-100">
@@ -456,7 +463,7 @@ export default function CoursesPage() {
                             <i className="ri-star-fill text-white text-sm"></i>
                           </div>
                           <span className="text-sm font-medium text-gray-900">
-                            {course.xp.toLocaleString()} / {course.totalXp.toLocaleString()} XP
+                            {course.xp.toLocaleString('id-ID')} / {course.totalXp.toLocaleString('id-ID')} XP
                           </span>
                         </div>
                         <div className="text-xs text-slate-600">
@@ -517,7 +524,7 @@ export default function CoursesPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/start-learning">
+                <Link href="/courses">
                   <button className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer whitespace-nowrap">
                     Start Free Trial
                   </button>

@@ -106,26 +106,47 @@ export default function Home() {
 
     const courses = [
         {
-            language: "Spanish",
-            level: "Beginner",
+            id: 1,
+            language: 'English',
+            level: 'beginner',
+            title: 'Beginner English',
+            subtitle: 'Master the basics',
             progress: 65,
+            xp: 1250,
+            totalXp: 2000,
             lessons: 24,
-            color: "from-cyan-400 to-cyan-500"
+            duration: '8 weeks',
+            color: 'from-blue-400 to-indigo-500',
+            isStarted: true
         },
         {
-            language: "French",
-            level: "Intermediate",
+            id: 2,
+            language: 'Spanish',
+            level: 'beginner',
+            title: 'Beginner Spanish',
+            subtitle: '¡Hola! Start here',
             progress: 40,
+            xp: 800,
+            totalXp: 2000,
             lessons: 18,
-            color: "from-blue-400 to-indigo-500"
+            duration: '6 weeks',
+            color: 'from-cyan-400 to-cyan-500',
+            isStarted: false
         },
         {
-            language: "Japanese",
-            level: "Beginner",
+            id: 3,
+            language: 'French',
+            level: 'intermediate',
+            title: 'Intermediate French',
+            subtitle: 'Bonjour conversation',
             progress: 20,
+            xp: 400,
+            totalXp: 2000,
             lessons: 12,
-            color: "from-pink-400 to-purple-500"
-        }
+            duration: '10 weeks',
+            color: 'from-purple-400 to-pink-500',
+            isStarted: true
+        },
     ];
 
     useEffect(() => {
@@ -179,13 +200,13 @@ export default function Home() {
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                            <Link href="/start-learning">
+                            <Link href="/courses">
                                 <button className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer whitespace-nowrap">
                                     Get Started Free
                                 </button>
                             </Link>
 
-                            <Link href="/try-demo">
+                            <Link href="/pricing">
                                 <button className="bg-white text-slate-700 px-8 py-4 rounded-full text-lg font-semibold border-2 border-slate-200 hover:border-cyan-400 hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer whitespace-nowrap">
                                     Try for Free
                                 </button>
@@ -312,42 +333,128 @@ export default function Home() {
 
                             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
                                 {courses.map((course, index) => (
-                                    <div key={index} className="bg-white rounded-3xl p-6 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer">
-                                        <div className={`w-full h-48 bg-gradient-to-br ${course.color} rounded-2xl mb-6 flex items-center justify-center`}>
-                                            <img
-                                                src={`https://readdy.ai/api/search-image?query=Language%20learning%20illustration%20for%20$%7Bcourse.language%7D%2C%20cultural%20elements%20and%20symbols%2C%20educational%20books%20and%20speech%20bubbles%2C%20friendly%20cartoon%20style%2C%20bright%20colorful%20design%2C%20modern%20flat%20illustration&width=400&height=300&seq=${course.language.toLowerCase()}-course&orientation=landscape`}
-                                                alt={`${course.language} Course`}
-                                                className="w-full h-full object-cover object-center rounded-2xl"
-                                            />
-                                        </div>
+                                    <div
+                                        key={course.id}
+                                        className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 hover:scale-105 cursor-pointer"
+                                    >
+                                        {/* Course Header */}
+                                        <div className="relative mb-6">
+                                            <div className={`w-full h-48 bg-gradient-to-br ${course.color} rounded-2xl flex items-center justify-center overflow-hidden`}>
+                                                <img
+                                                    src={`https://readdy.ai/api/search-image?query=Language%20learning%20illustration%20for%20$%7Bcourse.language%7D%20course%2C%20cultural%20elements%20and%20symbols%20representing%20$%7Bcourse.language%7D%20language%2C%20educational%20books%20and%20speech%20bubbles%2C%20modern%20flat%20illustration%20style%20with%20$%7Bcourse.level%7D%20difficulty%20indicators%2C%20bright%20colorful%20design%20with%20consistent%20simple%20background&width=400&height=300&seq=${course.language}-${course.level}-course&orientation=landscape`}
+                                                    alt={`${course.title} Course`}
+                                                    className="w-full h-full object-cover object-center"
+                                                />
+                                            </div>
 
-                                        <div className="space-y-4">
-                                            <div className="flex justify-between items-start">
-                                                <div>
-                                                    <h3 className="text-2xl font-bold text-gray-900">{course.language}</h3>
-                                                    <p className="text-slate-600">{course.level}</p>
-                                                </div>
-                                                <span className="bg-cyan-100 text-cyan-700 px-3 py-1 rounded-full text-sm font-medium">
-                                                    {course.lessons} lessons
+                                            {/* Level Badge */}
+                                            <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
+                                                <span className="text-xs font-semibold text-gray-700 capitalize">
+                                                    {course.level}
                                                 </span>
                                             </div>
 
-                                            <div className="space-y-2">
-                                                <div className="flex justify-between text-sm">
-                                                    <span className="text-slate-600">Progress</span>
-                                                    <span className="font-medium text-gray-900">{course.progress}%</span>
+                                            {/* Progress Ring (for started courses) */}
+                                            {course.isStarted && (
+                                                <div className="absolute -bottom-6 left-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center border-4 border-cyan-200">
+                                                    <div className="relative w-8 h-8">
+                                                        <svg className="w-8 h-8 transform -rotate-90" viewBox="0 0 32 32">
+                                                            <circle
+                                                                cx="16"
+                                                                cy="16"
+                                                                r="12"
+                                                                fill="none"
+                                                                stroke="#e2e8f0"
+                                                                strokeWidth="3"
+                                                            />
+                                                            <circle
+                                                                cx="16"
+                                                                cy="16"
+                                                                r="12"
+                                                                fill="none"
+                                                                stroke="#00BFCF"
+                                                                strokeWidth="3"
+                                                                strokeDasharray={`${course.progress * 0.75} 75`}
+                                                                className="transition-all duration-500"
+                                                            />
+                                                        </svg>
+                                                        <div className="absolute inset-0 flex items-center justify-center">
+                                                            <span className="text-xs font-bold text-cyan-600">{course.progress}%</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className="w-full bg-slate-200 rounded-full h-2">
-                                                    <div
-                                                        className="bg-gradient-to-r from-cyan-400 to-blue-500 h-2 rounded-full transition-all duration-500"
-                                                        style={{ width: `${course.progress}%` }}
-                                                    ></div>
+                                            )}
+                                        </div>
+
+                                        {/* Course Content */}
+                                        <div className="space-y-4">
+                                            <div>
+                                                <h3 className="text-xl font-bold text-gray-900 mb-1">{course.title}</h3>
+                                                <p className="text-slate-600 text-sm">{course.subtitle}</p>
+                                            </div>
+
+                                            {/* Course Stats */}
+                                            <div className="flex items-center justify-between text-sm text-slate-600">
+                                                <div className="flex items-center space-x-1">
+                                                    <i className="ri-book-line w-4 h-4 flex items-center justify-center"></i>
+                                                    <span>{course.lessons} lessons</span>
+                                                </div>
+                                                <div className="flex items-center space-x-1">
+                                                    <i className="ri-time-line w-4 h-4 flex items-center justify-center"></i>
+                                                    <span>{course.duration}</span>
                                                 </div>
                                             </div>
 
-                                            <button className="w-full bg-gradient-to-r from-slate-700 to-slate-800 text-white py-3 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer whitespace-nowrap">
-                                                Continue Learning
-                                            </button>
+
+                                            {/* Progress Section - Always present with consistent height */}
+                                            <div className="space-y-2 min-h-[60px] flex flex-col justify-center">
+                                                {course.isStarted ? (
+                                                    <>
+                                                        <div className="flex justify-between text-sm">
+                                                            <span className="text-slate-600">Progress</span>
+                                                            <span className="font-medium text-gray-900">{course.progress}%</span>
+                                                        </div>
+                                                        <div className="w-full bg-slate-200 rounded-full h-2">
+                                                            <div
+                                                                className="bg-gradient-to-r from-cyan-400 to-blue-500 h-2 rounded-full transition-all duration-500"
+                                                                style={{ width: `${course.progress}%` }}
+                                                            ></div>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    // Placeholder for non-started courses
+                                                    <div className="text-center text-sm text-slate-500">
+                                                        <i className="ri-rocket-line text-2xl text-gray-300 mb-2 block"></i>
+                                                        <span>Ready to begin your journey</span>
+                                                    </div>
+                                                )}
+                                            </div>
+
+
+                                            {/* XP Display */}
+                                            <div className="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-cyan-50 rounded-xl border border-yellow-100">
+                                                <div className="flex items-center space-x-2">
+                                                    <div className="w-6 h-6 bg-gradient-to-br from-yellow-400 to-cyan-500 rounded-full flex items-center justify-center">
+                                                        <i className="ri-star-fill text-white text-sm"></i>
+                                                    </div>
+                                                    <span className="text-sm font-medium text-gray-900">
+                                                        {course.xp.toLocaleString('id-ID')} / {course.totalXp.toLocaleString('id-ID')} XP
+                                                    </span>
+                                                </div>
+                                                <div className="text-xs text-slate-600">
+                                                    +{Math.floor(course.totalXp / course.lessons)} per lesson
+                                                </div>
+                                            </div>
+
+                                            {/* CTA Button */}
+                                            <Link href={`/courses/${course.id}`}>
+                                                <button className={`w-full py-3 rounded-2xl font-semibold transition-all duration-300 hover:scale-105 cursor-pointer whitespace-nowrap ${course.isStarted
+                                                    ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:shadow-lg'
+                                                    : 'bg-gray-900 text-white hover:bg-gray-800 hover:shadow-lg'
+                                                    }`}>
+                                                    {course.isStarted ? 'Continue Learning' : 'Start Course'}
+                                                </button>
+                                            </Link>
                                         </div>
                                     </div>
                                 ))}

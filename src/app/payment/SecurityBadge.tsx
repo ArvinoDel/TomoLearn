@@ -27,7 +27,7 @@ export default function SecurityBadge() {
       <div className="text-center mt-3">
         <p className="text-xs text-gray-500">
           Secured by <span className="font-semibold text-blue-600">TomoLearn Pay</span> • 
-          <a href="#" className="text-blue-600 hover:underline ml-1">Terms & Conditions</a> • 
+          <a href="/terms" className="text-blue-600 hover:underline ml-1">Terms & Conditions</a> • 
           <a href="#" className="text-blue-600 hover:underline ml-1">Refund Policy</a>
         </p>
       </div>

@@ -1,12 +1,12 @@
-
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, Typography, Button, Chip, LinearProgress, Box, IconButton, Paper } from '@mui/material';
-import { 
-  Mic as MicIcon, 
-  MicOff as MicOffIcon, 
+import {
+  Mic as MicIcon,
+  MicOff as MicOffIcon,
   PlayArrow as PlayIcon,
+  Stop as StopIcon,
   VolumeUp as VolumeIcon,
   Replay as ReplayIcon,
   CheckCircle as CheckIcon
@@ -27,6 +27,19 @@ interface SpeakingLessonProps {
 }
 
 export default function SpeakingLesson({ lesson, onProgressUpdate }: SpeakingLessonProps) {
+  // Guard clause untuk data kosong
+  if (!lesson?.content?.phrases?.length) {
+    return (
+      <Card className="rounded-2xl shadow-lg">
+        <CardContent className="p-8 text-center">
+          <Typography variant="h6" className="text-slate-500">
+            No phrases available for this lesson
+          </Typography>
+        </CardContent>
+      </Card>
+    );
+  }
+
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
   const [completedPhrases, setCompletedPhrases] = useState<boolean[]>(new Array(lesson.content.phrases.length).fill(false));
@@ -34,20 +47,41 @@ export default function SpeakingLesson({ lesson, onProgressUpdate }: SpeakingLes
   const [pronunciationScore, setPronunciationScore] = useState<number | null>(null);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [showWaveform, setShowWaveform] = useState(false);
-  
+
   const currentPhrase = lesson.content.phrases[currentPhraseIndex];
   const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Cleanup interval saat component unmount
+  useEffect(() => {
+    return () => {
+      if (recordingIntervalRef.current) {
+        clearInterval(recordingIntervalRef.current);
+      }
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   const startRecording = () => {
+    // Stop any playing audio when starting to record
+    if (audioRef.current && isPlayingAudio) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setIsPlayingAudio(false);
+    }
+
     setIsRecording(true);
     setRecordingTime(0);
     setPronunciationScore(null);
     setShowWaveform(true);
-    
+
     recordingIntervalRef.current = setInterval(() => {
       setRecordingTime(prev => prev + 0.1);
     }, 100);
-    
+
     // Simulate recording completion after 3 seconds
     setTimeout(() => {
       stopRecording();
@@ -57,11 +91,12 @@ export default function SpeakingLesson({ lesson, onProgressUpdate }: SpeakingLes
   const stopRecording = () => {
     setIsRecording(false);
     setShowWaveform(false);
-    
+
     if (recordingIntervalRef.current) {
       clearInterval(recordingIntervalRef.current);
+      recordingIntervalRef.current = null;
     }
-    
+
     // Simulate pronunciation analysis
     setTimeout(() => {
       const score = Math.floor(Math.random() * 30) + 70; // Random score between 70-100
@@ -69,36 +104,85 @@ export default function SpeakingLesson({ lesson, onProgressUpdate }: SpeakingLes
     }, 1000);
   };
 
-  const playAudio = () => {
-    setIsPlayingAudio(true);
-    // Simulate audio playback
-    setTimeout(() => {
+  const stopAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
       setIsPlayingAudio(false);
-    }, 2000);
+    }
+  };
+
+  const playAudio = (audioUrl: string) => {
+    // Stop previous audio if playing
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+
+    audioRef.current = new Audio(audioUrl);
+    setIsPlayingAudio(true);
+
+    audioRef.current.play()
+      .then(() => {
+        // Reset state when audio ends
+        if (audioRef.current) {
+          audioRef.current.onended = () => {
+            setIsPlayingAudio(false);
+          };
+
+          // Handle audio loading errors
+          audioRef.current.onerror = () => {
+            console.error("Failed to load audio:", audioUrl);
+            setIsPlayingAudio(false);
+          };
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to play audio:", error);
+        setIsPlayingAudio(false);
+      });
   };
 
   const markPhraseComplete = () => {
     const newCompleted = [...completedPhrases];
     newCompleted[currentPhraseIndex] = true;
     setCompletedPhrases(newCompleted);
-    
+
     const progress = (newCompleted.filter(Boolean).length / lesson.content.phrases.length) * 100;
     onProgressUpdate(progress);
   };
 
   const nextPhrase = () => {
     if (currentPhraseIndex < lesson.content.phrases.length - 1) {
+      // Reset states untuk phrase baru
       setCurrentPhraseIndex(currentPhraseIndex + 1);
       setPronunciationScore(null);
       setRecordingTime(0);
+      setIsPlayingAudio(false);
+      setShowWaveform(false);
+      
+      // Stop current audio
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
     }
   };
 
   const prevPhrase = () => {
     if (currentPhraseIndex > 0) {
+      // Reset states untuk phrase sebelumnya
       setCurrentPhraseIndex(currentPhraseIndex - 1);
       setPronunciationScore(null);
       setRecordingTime(0);
+      setIsPlayingAudio(false);
+      setShowWaveform(false);
+      
+      // Stop current audio
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
     }
   };
 
@@ -123,13 +207,13 @@ export default function SpeakingLesson({ lesson, onProgressUpdate }: SpeakingLes
             <Typography variant="h6" className="font-bold text-slate-900">
               Speaking Practice Progress
             </Typography>
-            <Chip 
+            <Chip
               label={`${currentPhraseIndex + 1} / ${lesson.content.phrases.length}`}
               className="bg-blue-100 text-blue-700 font-semibold"
             />
           </div>
-          <LinearProgress 
-            variant="determinate" 
+          <LinearProgress
+            variant="determinate"
             value={((completedPhrases.filter(Boolean).length) / lesson.content.phrases.length) * 100}
             className="h-3 rounded-full bg-slate-100"
             sx={{
@@ -149,14 +233,14 @@ export default function SpeakingLesson({ lesson, onProgressUpdate }: SpeakingLes
             <div className="text-center space-y-6">
               {completedPhrases[currentPhraseIndex] && (
                 <div className="flex justify-center">
-                  <Chip 
+                  <Chip
                     icon={<CheckIcon />}
                     label="Completed"
                     className="bg-green-100 text-green-700 font-semibold"
                   />
                 </div>
               )}
-              
+
               {/* Japanese Text */}
               <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl p-8">
                 <Typography variant="h3" className="font-light text-slate-800 mb-4">
@@ -174,18 +258,37 @@ export default function SpeakingLesson({ lesson, onProgressUpdate }: SpeakingLes
                 </Typography>
               </Paper>
 
-              {/* Audio Playback */}
-              <div className="flex justify-center">
+              {/* Audio Controls - Play & Stop */}
+              <div className="flex justify-center gap-3">
                 <Button
                   variant="outlined"
-                  startIcon={isPlayingAudio ? <VolumeIcon /> : <PlayIcon />}
-                  onClick={playAudio}
-                  disabled={isPlayingAudio}
+                  startIcon={<PlayIcon />}
+                  onClick={() => playAudio(currentPhrase.audio)}
+                  disabled={isPlayingAudio || isRecording}
                   className="rounded-xl px-6 py-3"
                 >
                   {isPlayingAudio ? 'Playing...' : 'Listen'}
                 </Button>
+                
+                {isPlayingAudio && (
+                  <Button
+                    variant="contained"
+                    startIcon={<StopIcon />}
+                    onClick={stopAudio}
+                    className="rounded-xl px-6 py-3 bg-red-600 hover:bg-red-700"
+                  >
+                    Stop
+                  </Button>
+                )}
               </div>
+
+              {/* Debug Info - Show current audio URL (can be removed in production) */}
+              {process.env.NODE_ENV === 'development' && (
+                <div className="text-xs text-slate-400 mt-2">
+                  Audio: {currentPhrase.audio.substring(currentPhrase.audio.lastIndexOf('/') + 1)}
+                </div>
+              )}
+
             </div>
           </CardContent>
         </Card>
@@ -204,17 +307,22 @@ export default function SpeakingLesson({ lesson, onProgressUpdate }: SpeakingLes
               {/* Recording Button */}
               <div className="relative">
                 <div className={`w-32 h-32 mx-auto rounded-full flex items-center justify-center transition-all duration-300 ${
-                  isRecording ? 'bg-red-500 scale-110' : 'bg-blue-500 hover:bg-blue-600'
-                }`}>
-                  <IconButton 
+                  isRecording 
+                    ? 'bg-red-500 scale-110' 
+                    : isPlayingAudio 
+                      ? 'bg-gray-400 cursor-not-allowed' 
+                      : 'bg-blue-500 hover:bg-blue-600'
+                  }`}>
+                  <IconButton
                     onClick={isRecording ? stopRecording : startRecording}
                     className="text-white p-4"
                     size="large"
+                    disabled={isPlayingAudio && !isRecording}
                   >
                     {isRecording ? <MicOffIcon className="text-4xl" /> : <MicIcon className="text-4xl" />}
                   </IconButton>
                 </div>
-                
+
                 {/* Recording Animation */}
                 {isRecording && (
                   <div className="absolute inset-0 flex items-center justify-center">
@@ -224,7 +332,7 @@ export default function SpeakingLesson({ lesson, onProgressUpdate }: SpeakingLes
               </div>
 
               <Typography variant="body1" className="text-slate-600">
-                {isRecording ? 'Recording... Speak clearly!' : 'Tap to start recording'}
+                {isRecording ? 'Recording... Speak clearly!' : isPlayingAudio ? 'Stop audio first to record' : 'Tap to start recording'}
               </Typography>
 
               {/* Recording Time */}
@@ -268,7 +376,7 @@ export default function SpeakingLesson({ lesson, onProgressUpdate }: SpeakingLes
               {/* Action Buttons */}
               <div className="flex justify-center gap-3">
                 {pronunciationScore !== null && pronunciationScore >= 70 && !completedPhrases[currentPhraseIndex] && (
-                  <Button 
+                  <Button
                     variant="contained"
                     onClick={markPhraseComplete}
                     className="bg-green-600 hover:bg-green-700 rounded-xl px-6"
@@ -276,9 +384,9 @@ export default function SpeakingLesson({ lesson, onProgressUpdate }: SpeakingLes
                     Mark Complete
                   </Button>
                 )}
-                
+
                 {pronunciationScore !== null && pronunciationScore < 70 && (
-                  <Button 
+                  <Button
                     variant="outlined"
                     startIcon={<ReplayIcon />}
                     onClick={() => setPronunciationScore(null)}
@@ -297,23 +405,23 @@ export default function SpeakingLesson({ lesson, onProgressUpdate }: SpeakingLes
       <Card className="rounded-2xl shadow-lg mt-8">
         <CardContent className="p-6">
           <div className="flex justify-between items-center">
-            <Button 
-              variant="outlined" 
+            <Button
+              variant="outlined"
               onClick={prevPhrase}
               disabled={currentPhraseIndex === 0}
               className="rounded-xl"
             >
               Previous Phrase
             </Button>
-            
+
             <div className="text-center">
               <Typography variant="body2" className="text-slate-500">
                 Practice each phrase until you get 70% or higher
               </Typography>
             </div>
-            
-            <Button 
-              variant="contained" 
+
+            <Button
+              variant="contained"
               onClick={nextPhrase}
               disabled={currentPhraseIndex === lesson.content.phrases.length - 1 || !completedPhrases[currentPhraseIndex]}
               className="bg-blue-600 hover:bg-blue-700 rounded-xl"

@@ -30,7 +30,7 @@ export default function Footer() {
               <Link href="/about" className="block text-sm font-light text-gray-600 hover:text-gray-900 transition-colors duration-300">
                 About Us
               </Link>
-              <Link href="/careers" className="block text-sm font-light text-gray-600 hover:text-gray-900 transition-colors duration-300">
+              {/* <Link href="/careers" className="block text-sm font-light text-gray-600 hover:text-gray-900 transition-colors duration-300">
                 Careers
               </Link>
               <Link href="/press" className="block text-sm font-light text-gray-600 hover:text-gray-900 transition-colors duration-300">
@@ -38,7 +38,7 @@ export default function Footer() {
               </Link>
               <Link href="/blog" className="block text-sm font-light text-gray-600 hover:text-gray-900 transition-colors duration-300">
                 Blog
-              </Link>
+              </Link> */}
             </div>
           </div>
 

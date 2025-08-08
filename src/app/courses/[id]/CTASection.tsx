@@ -159,7 +159,7 @@ export default function CTASection({ course }: CTASectionProps) {
                   <div className="grid grid-cols-3 gap-6 text-center">
                     <div>
                       <div className="text-2xl font-bold text-white">{
-                        course.studentCountFormatted = course.studentCount.toLocaleString('en-US')
+                        course.studentCountFormatted = course.studentCount.toLocaleString('id-ID')
 }</div>
                       <div className="text-sm text-gray-200">Students</div>
                     </div>

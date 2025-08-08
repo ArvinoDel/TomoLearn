@@ -68,7 +68,7 @@ export default function InstructorSection({ instructor }: InstructorSectionProps
                 <div className="flex items-center gap-3 mb-6">
                   <Rating value={instructor.rating} precision={0.1} size="small" readOnly />
                   <span className="font-semibold text-gray-900">{instructor.rating}</span>
-                  <span className="text-slate-600">({instructor.studentsFormatted = instructor.students.toLocaleString('en-US')} students)</span>
+                  <span className="text-slate-600">({instructor.studentsFormatted = instructor.students.toLocaleString('id-ID')} students)</span>
                 </div>
               </div>
 

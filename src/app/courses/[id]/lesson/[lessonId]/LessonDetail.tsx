@@ -71,7 +71,7 @@ const lessonData = {
     description: "Practice essential greeting phrases with AI pronunciation feedback",
     content: {
       phrases: [
-        { japanese: "こんにちは", romaji: "Konnichiwa", english: "Hello/Good afternoon", audio: "greeting1.mp3" },
+        { japanese: "こんにちは", romaji: "Konnichiwa", english: "Hello/Good afternoon", audio: "https://ik.imagekit.io/tdqizhhci/file_example_MP3_700KB.mp3" },
         { japanese: "おはよう", romaji: "Ohayou", english: "Good morning (casual)", audio: "greeting2.mp3" },
         { japanese: "こんばんは", romaji: "Konbanwa", english: "Good evening", audio: "greeting3.mp3" },
         { japanese: "はじめまして", romaji: "Hajimemashite", english: "Nice to meet you", audio: "greeting4.mp3" }
