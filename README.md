@@ -2,7 +2,18 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+First, create a `.env.local` file based on the following template:
+
+```ini
+MONGODB_URI=mongodb+srv://<user>:<pass>@<cluster>/<db>?retryWrites=true&w=majority
+MONGODB_DB=tomolearn
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=changeme
+```
+
+Use the same keys in Vercel project settings for Production and Preview. When deployed on Vercel, `NEXTAUTH_URL` can be derived from `VERCEL_URL`.
+
+Then, run the development server:
 
 ```bash
 npm run dev
