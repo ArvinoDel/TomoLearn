@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Fade, Box } from '@mui/material';
 import Link from 'next/link';
 
-const sectionKeys = ['quote', 'benefits', 'mainbanner', 'communitystat', 'communityguide'] as const;
+const sectionKeys = ['quote', 'benefits', 'mainbanner', 'communitystat', 'communityGuide'] as const;
 type SectionKey = typeof sectionKeys[number];
 
 export default function CommunityPage() {
@@ -21,14 +21,14 @@ export default function CommunityPage() {
     benefits: false,
     mainbanner: false,
     communitystat: false,
-    communityguide: false,
+    communityGuide: false,
   });
 
   // Separate refs for each section
   const quoteRef = useRef<HTMLDivElement | null>(null);
   const benefitsRef = useRef<HTMLDivElement | null>(null);
   const mainbannerRef = useRef<HTMLDivElement | null>(null);
-  const communitguideRef = useRef<HTMLDivElement | null>(null);
+  const communityGuideRef = useRef<HTMLDivElement | null>(null);
   const communitystatRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export default function CommunityPage() {
       quote: quoteRef,
       benefits: benefitsRef,
       mainbanner: mainbannerRef,
-      communityguide: communitguideRef,
+      communityGuide: communityGuideRef,
       communitystat: communitystatRef
     };
 
@@ -258,8 +258,8 @@ export default function CommunityPage() {
         </Fade>
 
         {/* Community Guidelines */}
-        <Fade in={visibleSections.communityguide} timeout={1000}>
-          <Box ref={communitguideRef}>
+        <Fade in={visibleSections.communityGuide} timeout={1000}>
+          <Box ref={communityGuideRef}>
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
               <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">Community Guidelines</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
