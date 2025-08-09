@@ -13,14 +13,35 @@ interface OrderData {
   invoiceNumber: string;
   subtotal: number;
   tax: number;
-  total: number;
+  discount: number;
 }
 
 interface OrderSummaryProps {
   orderData: OrderData;
 }
 
+
 export default function OrderSummary({ orderData }: OrderSummaryProps) {
+
+  const total = (orderData.subtotal).toLocaleString('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  });
+
+  const totalDiscount = ((orderData.subtotal) * (orderData.discount / 100)).toLocaleString('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  });
+
+  const finalTotal = ((orderData.subtotal + orderData.tax - (orderData.subtotal) * (orderData.discount / 100))).toLocaleString('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  });
+
+
   return (
     <Card className="rounded-2xl shadow-lg sticky top-8">
       <CardContent className="p-6">
@@ -38,9 +59,9 @@ export default function OrderSummary({ orderData }: OrderSummaryProps) {
             <div className="flex-1">
               <h3 className="font-semibold text-gray-800 mb-1">{orderData.planTitle}</h3>
               <p className="text-sm text-gray-600 mb-2">{orderData.duration}</p>
-              <Chip 
-                label="Premium Access" 
-                size="small" 
+              <Chip
+                label="Premium Access"
+                size="small"
                 className="bg-blue-600 text-white"
               />
             </div>
@@ -67,18 +88,22 @@ export default function OrderSummary({ orderData }: OrderSummaryProps) {
         <div className="space-y-3">
           <div className="flex justify-between items-center">
             <span className="text-gray-600">Subtotal</span>
-            <span className="font-medium">Rp {orderData.subtotal.toLocaleString('id-ID')}</span>
+            <span className="font-medium">{total}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-gray-600">Tax (10%)</span>
             <span className="font-medium">Rp {orderData.tax.toLocaleString('id-ID')}</span>
           </div>
-          
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600">Discount</span>
+            <span className="font-medium text-green-700">- {totalDiscount}</span>
+          </div>
+
           <Divider className="my-3" />
-          
+
           <div className="flex justify-between items-center text-lg">
             <span className="font-semibold text-gray-800">Total</span>
-            <span className="font-bold text-blue-600">Rp {orderData.total.toLocaleString('id-ID')}</span>
+            <span className="font-bold text-blue-600">{finalTotal}</span>
           </div>
         </div>
 

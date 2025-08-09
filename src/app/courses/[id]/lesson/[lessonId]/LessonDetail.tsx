@@ -85,16 +85,16 @@ const lessonData = {
     courseId: '4',
     courseTitle: "Master Japanese N5 – 30 Days",
     module: "Module 1: Foundation",
-    duration: "8 min",
+    duration: "1 min",
     completed: true,
     progress: 100,
     description: "Understanding Japanese social customs and cultural context",
     content: {
-      videoUrl: "https://readdy.ai/api/search-image?query=Modern%20Japanese%20cultural%20scene%20with%20traditional%20elements%2C%20cherry%20blossoms%2C%20peaceful%20temple%20garden%2C%20people%20in%20both%20traditional%20and%20modern%20clothing%2C%20educational%20documentary%20style%2C%20warm%20natural%20lighting&width=800&height=450&seq=japan-culture-video&orientation=landscape",
+      videoUrl: "https://ik.imagekit.io/tdqizhhci/an%20Invitation%20to%20Japanese%20Culture%20_1min_.mp4",
       transcript: [
         { time: "0:00", text: "Welcome to Japanese culture! Today we'll explore the beautiful customs that shape daily life in Japan." },
         { time: "0:30", text: "Bowing is a fundamental greeting. The depth of your bow shows respect and courtesy." },
-        { time: "1:15", text: "Gift-giving, or 'omiyage', is deeply rooted in Japanese society..." }
+        { time: "1:00", text: "Gift-giving, or 'omiyage', is deeply rooted in Japanese society..." }
       ],
       keyPoints: [
         "Respect and harmony (wa) are central values",
