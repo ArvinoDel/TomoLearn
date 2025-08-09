@@ -1,7 +1,8 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
 import {
   Card,
   CardContent,
@@ -30,6 +31,8 @@ export default function PaymentPage() {
   const [loading, setLoading] = useState(false);
   const [paymentStep, setPaymentStep] = useState('select'); // select, processing, success
   const [qrCodeGenerated, setQrCodeGenerated] = useState(false);
+  const invoiceRef = useRef<HTMLDivElement>(null);
+  const handlePrint = useReactToPrint({ content: () => invoiceRef.current });
 
   const orderData = {
     planTitle: "Japanese N5 Mastery – 1 Month Access",
@@ -101,7 +104,7 @@ export default function PaymentPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-12 px-4">
         <div className="max-w-md mx-auto">
-          <Card className="rounded-2xl shadow-lg">
+          <Card ref={invoiceRef} className="rounded-2xl shadow-lg">
             <CardContent className="p-0">
               {/* Header */}
               <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-t-2xl">
@@ -214,7 +217,7 @@ export default function PaymentPage() {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="space-y-3">
+                <div className="space-y-3 no-print">
                   <Button
                     variant="contained"
                     fullWidth
@@ -228,7 +231,7 @@ export default function PaymentPage() {
                     variant="outlined"
                     fullWidth
                     className="border-gray-300 text-gray-700 hover:bg-gray-50 py-3 rounded-xl"
-                    onClick={() => window.print()}
+                    onClick={handlePrint}
                   >
                     Print Invoice
                   </Button>
