@@ -28,7 +28,7 @@ export default function InteractiveLesson({ lesson, onProgressUpdate }: Interact
 
   const currentChar = lesson.content.characters[currentCharIndex];
 
-  // Setup canvas context when component mounts or canvas ref changes
+  // Setup canvas context when the component mounts (runs only on mount)
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
