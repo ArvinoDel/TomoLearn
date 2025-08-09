@@ -9,6 +9,7 @@ interface InstructorSectionProps {
 }
 
 export default function InstructorSection({ instructor }: InstructorSectionProps) {
+  const studentsFormatted = instructor.students.toLocaleString('id-ID');
   return (
     <section className="py-16 px-6 md:px-12 lg:px-16 bg-gradient-to-br from-purple-50 via-white to-pink-50">
       <div className="max-w-7xl mx-auto">
@@ -68,7 +69,7 @@ export default function InstructorSection({ instructor }: InstructorSectionProps
                 <div className="flex items-center gap-3 mb-6">
                   <Rating value={instructor.rating} precision={0.1} size="small" readOnly />
                   <span className="font-semibold text-gray-900">{instructor.rating}</span>
-                  <span className="text-slate-600">({instructor.studentsFormatted = instructor.students.toLocaleString('id-ID')} students)</span>
+                  <span className="text-slate-600">({studentsFormatted} students)</span>
                 </div>
               </div>
 

@@ -18,6 +18,8 @@ interface CourseHeroProps {
 
 export default function CourseHero({ course }: CourseHeroProps) {
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const reviewCountFormatted = course.reviewCount.toLocaleString('id-ID');
+  const studentCountFormatted = course.studentCount.toLocaleString('id-ID');
 
   return (
     <section className="relative py-16 px-6 md:px-12 lg:px-16 overflow-hidden">
@@ -71,15 +73,13 @@ export default function CourseHero({ course }: CourseHeroProps) {
               <div className="flex items-center gap-2">
                 <Rating value={course.rating} precision={0.1} size="small" readOnly />
                 <span className="text-sm font-semibold text-gray-900">{course.rating}</span>
-                <span className="text-sm text-slate-600">({course.reviewCountFormatted = course.reviewCount.toLocaleString('id-ID')
-                } reviews)</span>
+                <span className="text-sm text-slate-600">({reviewCountFormatted} reviews)</span>
               </div>
               <div className="flex items-center gap-1 text-slate-600">
                 <div className="w-4 h-4 flex items-center justify-center">
                   <i className="ri-user-line text-sm"></i>
                 </div>
-                <span className="text-sm">{
-                  course.studentCountFormatted = course.studentCount.toLocaleString('id-ID')} students</span>
+                <span className="text-sm">{studentCountFormatted} students</span>
               </div>
               <div className="flex items-center gap-1 text-slate-600">
                 <div className="w-4 h-4 flex items-center justify-center">
