@@ -32,7 +32,7 @@ export default function PaymentPage() {
   const [paymentStep, setPaymentStep] = useState('select'); // select, processing, success
   const [qrCodeGenerated, setQrCodeGenerated] = useState(false);
   const invoiceRef = useRef<HTMLDivElement>(null);
-  const handlePrint = useReactToPrint({ content: () => invoiceRef.current });
+  const handlePrint = useReactToPrint({ contentRef: invoiceRef });
 
   const orderData = {
     planTitle: "Japanese N5 Mastery – 1 Month Access",
