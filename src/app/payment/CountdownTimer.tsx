@@ -13,14 +13,14 @@ export default function CountdownTimer({ initialTime }: CountdownTimerProps) {
   const [timeLeft, setTimeLeft] = useState(initialTime);
 
   useEffect(() => {
-    if (timeLeft <= 0) return;
+    if (initialTime <= 0 || timeLeft <= 0) return;
 
     const interval = setInterval(() => {
       setTimeLeft(prev => prev - 1);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [timeLeft]);
+  }, [initialTime, timeLeft]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -28,7 +28,9 @@ export default function CountdownTimer({ initialTime }: CountdownTimerProps) {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const progressValue = ((initialTime - timeLeft) / initialTime) * 100;
+  const progressValue = initialTime > 0
+    ? ((initialTime - timeLeft) / initialTime) * 100
+    : 100;
   const isWarning = timeLeft <= 300; // 5 minutes warning
   const isExpired = timeLeft <= 0;
 
