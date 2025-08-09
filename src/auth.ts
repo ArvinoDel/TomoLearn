@@ -1,12 +1,10 @@
 import NextAuth from "next-auth";
-import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import Credentials from "next-auth/providers/credentials";
-import clientPromise from "./lib/mongodb";
 import bcrypt from "bcrypt";
+import { getDb } from "./lib/db";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: MongoDBAdapter(async () => (await clientPromise)),
-  session: { strategy: "database" },
+  session: { strategy: "jwt" },
 
   providers: [
     Credentials({
@@ -16,7 +14,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: "Password", type: "password" }
       },
       authorize: async (creds) => {
-        const { users } = await (await import("./lib/db")).getDb();
+        const { users } = await getDb();
         const user = await users.findOne({ email: (creds?.email || "").toLowerCase().trim() });
         if (!user) return null;
         const ok = await bcrypt.compare(creds!.password!, user.passwordHash);
