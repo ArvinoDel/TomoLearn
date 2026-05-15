@@ -118,7 +118,7 @@ export default function OrderSummary({ orderData }: OrderSummaryProps) {
 
         {/* Features Included */}
         <div className="mt-6">
-          <h4 className="font-semibold text-gray-800 mb-3">What's Included:</h4>
+          <h4 className="font-semibold text-gray-800 mb-3">What&apos;s Included:</h4>
           <ul className="space-y-2">
             {[
               'AI-powered personalized lessons',

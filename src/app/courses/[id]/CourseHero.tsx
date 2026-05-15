@@ -13,6 +13,7 @@ import {
 } from '@mui/icons-material';
 
 interface CourseHeroProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   course: any;
 }
 

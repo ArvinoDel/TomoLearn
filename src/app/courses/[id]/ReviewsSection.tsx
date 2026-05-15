@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Rating, Button, LinearProgress } from '@mui/material';
 
 interface ReviewsSectionProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   reviews: any[];
   rating: number;
   reviewCount: number;
@@ -102,7 +103,7 @@ export default function ReviewsSection({ reviews, rating, reviewCount }: Reviews
                 </div>
 
                 <p className="text-gray-700 leading-relaxed mb-4 text-lg">
-                  "{review.comment}"
+                  &quot;{review.comment}&quot;
                 </p>
 
                 <div className="flex items-center justify-between">

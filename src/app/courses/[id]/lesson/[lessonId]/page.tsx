@@ -16,6 +16,7 @@ export async function generateStaticParams() {
   ];
 }
 
-export default async function LessonPage({ params }: { params: { id: string; lessonId: string } }) {
-  return <LessonDetail courseId={params.id} lessonId={params.lessonId} />;
+export default async function LessonPage({ params }: { params: Promise<{ id: string; lessonId: string }> }) {
+  const resolvedParams = await params;
+  return <LessonDetail courseId={resolvedParams.id} lessonId={resolvedParams.lessonId} />;
 }

@@ -6,7 +6,7 @@ const HelpCenterPage = () => {
     const [visible, setVisible] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [activeCategory, setActiveCategory] = useState('All');
-    const [expandedFaq, setExpandedFaq] = useState(null);
+    const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
     useEffect(() => {
         setVisible(true);
@@ -64,7 +64,7 @@ const HelpCenterPage = () => {
         return matchesSearch && matchesCategory;
     });
 
-    const toggleFaq = (index) => {
+    const toggleFaq = (index: number) => {
         setExpandedFaq(expandedFaq === index ? null : index);
     };
 

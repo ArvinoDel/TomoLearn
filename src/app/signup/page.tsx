@@ -134,7 +134,7 @@ export default function SignUp() {
                 </span>
               </div>
               <h1 className="text-3xl font-bold text-gray-800 mb-2">Create Your Free Account</h1>
-              <p className="text-gray-600">Start learning today — it's fast and free</p>
+              <p className="text-gray-600">Start learning today — it&apos;s fast and free</p>
             </div>
 
             {/* Form */}

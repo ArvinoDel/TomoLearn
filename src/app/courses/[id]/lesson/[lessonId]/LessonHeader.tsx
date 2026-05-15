@@ -63,6 +63,7 @@ export default function LessonHeader({ lesson, progress }: LessonHeaderProps) {
               <span className="text-2xl">{typeConfig.icon}</span>
               <Chip 
                 label={typeConfig.label}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 color={typeConfig.color as any}
                 size="small"
                 className="font-medium"

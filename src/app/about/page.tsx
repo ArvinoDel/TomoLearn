@@ -154,7 +154,7 @@ const AboutUsPage = () => {
                                 Founded in 2025, TomoLearn emerged from a simple yet powerful idea: that every learner deserves access to high-quality, personalized education. Our founders, a group of educators and technologists, recognized the growing gap between traditional teaching methods and the diverse needs of modern learners.
                             </p>
                             <p className="text-gray-700 leading-relaxed mb-6">
-                                Through cutting-edge AI and adaptive learning technologies, we've created a platform that not only delivers content but understands each learner's unique journey. Today, we serve thousands of students worldwide, helping them achieve their educational goals through innovative, engaging experiences.
+                                Through cutting-edge AI and adaptive learning technologies, we&apos;ve created a platform that not only delivers content but understands each learner&apos;s unique journey. Today, we serve thousands of students worldwide, helping them achieve their educational goals through innovative, engaging experiences.
                             </p>
                             <p className="text-gray-700 leading-relaxed">
                                 As we continue to grow, our commitment remains unchanged: to empower every learner with the tools and opportunities they need to succeed in an ever-evolving world.

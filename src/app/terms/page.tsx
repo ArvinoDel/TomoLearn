@@ -160,7 +160,7 @@ const TermsModal: React.FC = () => {
                   About TomoLearn
                 </h3>
                 <p className="text-gray-700 leading-relaxed">
-                  At TomoLearn, we think travel should be exciting and affordable. That's why we team up with
+                  At TomoLearn, we think travel should be exciting and affordable. That&apos;s why we team up with
                   hundreds of airlines to bring you the best deals on both domestic and international flights. Let
                   us help you make your dream trip a reality!
                 </p>
@@ -361,7 +361,7 @@ const TermsModal: React.FC = () => {
                                 </Typography>
                                 <Typography variant="body1" className="text-gray-700 text-sm sm:text-base leading-relaxed mb-3 sm:mb-4">
                                   If you have any questions about this Privacy Policy or our data practices,
-                                  we're here to help. Reach out to our privacy team for immediate assistance.
+                                  we&apos;re here to help. Reach out to our privacy team for immediate assistance.
                                 </Typography>
                                 <div className="flex flex-col gap-3 sm:gap-4">
                                   <a

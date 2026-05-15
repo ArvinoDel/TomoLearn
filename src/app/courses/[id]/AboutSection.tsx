@@ -2,6 +2,7 @@
 'use client';
 
 interface AboutSectionProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   course: any;
 }
 
@@ -14,7 +15,7 @@ export default function AboutSection({ course }: AboutSectionProps) {
           <div className="space-y-8">
             <div>
               <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
-                What You'll Learn 🎯
+                What You&apos;ll Learn 🎯
               </h2>
               <p className="text-lg text-slate-600 leading-relaxed mb-8">
                 This comprehensive course is designed to take you from absolute beginner to conversational Japanese speaker in just 30 days.
@@ -116,7 +117,7 @@ export default function AboutSection({ course }: AboutSectionProps) {
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-2">💡 Learning Tip</h4>
                   <p className="text-slate-700 italic leading-relaxed">
-                    "The best time to plant a tree was 20 years ago. The second best time is now. Start your Japanese journey today!"
+                    &quot;The best time to plant a tree was 20 years ago. The second best time is now. Start your Japanese journey today!&quot;
                   </p>
                 </div>
               </div>

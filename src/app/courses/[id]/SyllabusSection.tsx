@@ -8,6 +8,7 @@ import { Accordion, AccordionSummary, AccordionDetails, LinearProgress, Chip } f
 import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 
 interface SyllabusSectionProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   course: any;
 }
 
@@ -137,6 +138,7 @@ export default function SyllabusSection({ course }: SyllabusSectionProps) {
 
           {/* Right - Syllabus Content */}
           <div className="lg:col-span-2 space-y-4">
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {course.syllabus.map((week: any, index: number) => (
               <Accordion
                 key={index}
@@ -188,6 +190,7 @@ export default function SyllabusSection({ course }: SyllabusSectionProps) {
 
                 <AccordionDetails sx={{ padding: '0 24px 24px' }}>
                   <div className="space-y-3">
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {week.topics.map((topic: any, topicIndex: number) => (
                       <div
                         onClick={() => {

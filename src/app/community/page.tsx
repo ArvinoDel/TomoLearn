@@ -147,7 +147,7 @@ export default function CommunityPage() {
                 </div>
 
                 <blockquote className="text-lg md:text-xl text-slate-700 italic mb-4 leading-relaxed">
-                  "The TomoLearn community transformed my learning journey! Having study buddies from around the world made practicing Spanish so much more fun and engaging. We motivate each other daily and celebrate every milestone together! 🎉"
+                  &quot;The TomoLearn community transformed my learning journey! Having study buddies from around the world made practicing Spanish so much more fun and engaging. We motivate each other daily and celebrate every milestone together! 🎉&quot;
                 </blockquote>
 
                 <div className="flex items-center justify-center">
@@ -184,7 +184,7 @@ export default function CommunityPage() {
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">Peer Support</h3>
                 <p className="text-slate-600 leading-relaxed">
-                  Get motivation, tips, and encouragement from learners at every level. We're all in this journey together!
+                  Get motivation, tips, and encouragement from learners at every level. We&apos;re all in this journey together!
                 </p>
               </div>
 
@@ -211,7 +211,7 @@ export default function CommunityPage() {
                   Ready to Connect with Amazing Learners?
                 </h2>
                 <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-                  Join our vibrant WhatsApp community where thousands of language learners share tips, practice together, and celebrate achievements. It's free, friendly, and full of opportunities to grow! 🌱
+                  Join our vibrant WhatsApp community where thousands of language learners share tips, practice together, and celebrate achievements. It&apos;s free, friendly, and full of opportunities to grow! 🌱
                 </p>
               </div>
 

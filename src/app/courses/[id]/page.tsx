@@ -161,7 +161,10 @@ export async function generateStaticParams() {
   ];
 }
 
-export default function CourseDetailPage({ params }: { params: { id: string } }) {
+import { use } from 'react';
+
+export default function CourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params);
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-blue-50">
       {/* Floating Background Elements */}

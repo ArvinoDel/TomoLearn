@@ -269,7 +269,7 @@ export default function Home() {
 
                                     <div className="space-y-4">
                                         <div className="text-4xl font-bold text-cyan-600">{streakDays} Days</div>
-                                        <p className="text-slate-600">Keep it up! You're on fire!</p>
+                                        <p className="text-slate-600">Keep it up! You&apos;re on fire!</p>
 
                                         <div className="flex space-x-2">
                                             {[...Array(7)].map((_, i) => (
@@ -526,7 +526,7 @@ export default function Home() {
                                 <div className="space-y-6">
                                     <div className="text-6xl">{testimonials[currentTestimonial].avatar}</div>
                                     <blockquote className="text-2xl text-slate-700 italic">
-                                        "{testimonials[currentTestimonial].text}"
+                                        &quot;{testimonials[currentTestimonial].text}&quot;
                                     </blockquote>
                                     <div className="space-y-2">
                                         <div className="font-bold text-gray-900 text-xl">
