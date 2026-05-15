@@ -216,7 +216,7 @@ export default function LessonDetail({ courseId, lessonId }: LessonDetailProps) 
               variant="body1"
               className="mb-8 text-slate-500 leading-relaxed"
             >
-              You've successfully finished all the lessons in this course. Great job on your learning journey!
+              You&apos;ve successfully finished all the lessons in this course. Great job on your learning journey!
             </Typography>
 
             {/* Action button */}

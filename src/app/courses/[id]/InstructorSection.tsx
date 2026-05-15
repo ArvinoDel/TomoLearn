@@ -5,6 +5,7 @@ import { Avatar, Rating, Button, Tooltip } from '@mui/material';
 import Link from 'next/link';
 
 interface InstructorSectionProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   instructor: any;
 }
 
@@ -18,7 +19,7 @@ export default function InstructorSection({ instructor }: InstructorSectionProps
             Meet Your Instructor 👨‍🏫
           </h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Learn from an expert who's dedicated to your success in mastering Japanese.
+            Learn from an expert who&apos;s dedicated to your success in mastering Japanese.
           </p>
         </div>
 
@@ -53,7 +54,7 @@ export default function InstructorSection({ instructor }: InstructorSectionProps
                     </div>
                   </div>
                   <p className="text-sm text-gray-900 italic leading-relaxed">
-                    "Every student can master Japanese with the right guidance and practice. I'm here to make your journey enjoyable and successful!"
+                    &quot;Every student can master Japanese with the right guidance and practice. I&apos;m here to make your journey enjoyable and successful!&quot;
                   </p>
                 </div>
               </div>

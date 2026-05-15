@@ -27,28 +27,17 @@ interface SpeakingLessonProps {
 }
 
 export default function SpeakingLesson({ lesson, onProgressUpdate }: SpeakingLessonProps) {
-  // Guard clause untuk data kosong
-  if (!lesson?.content?.phrases?.length) {
-    return (
-      <Card className="rounded-2xl shadow-lg">
-        <CardContent className="p-8 text-center">
-          <Typography variant="h6" className="text-slate-500">
-            No phrases available for this lesson
-          </Typography>
-        </CardContent>
-      </Card>
-    );
-  }
-
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
-  const [completedPhrases, setCompletedPhrases] = useState<boolean[]>(new Array(lesson.content.phrases.length).fill(false));
+  const [completedPhrases, setCompletedPhrases] = useState<boolean[]>(
+    new Array(lesson?.content?.phrases?.length || 0).fill(false)
+  );
   const [recordingTime, setRecordingTime] = useState(0);
   const [pronunciationScore, setPronunciationScore] = useState<number | null>(null);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [showWaveform, setShowWaveform] = useState(false);
 
-  const currentPhrase = lesson.content.phrases[currentPhraseIndex];
+  const currentPhrase = lesson?.content?.phrases?.[currentPhraseIndex];
   const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -64,6 +53,19 @@ export default function SpeakingLesson({ lesson, onProgressUpdate }: SpeakingLes
       }
     };
   }, []);
+
+  // Guard clause untuk data kosong moved below hooks
+  if (!lesson?.content?.phrases?.length || !currentPhrase) {
+    return (
+      <Card className="rounded-2xl shadow-lg">
+        <CardContent className="p-8 text-center">
+          <Typography variant="h6" className="text-slate-500">
+            No phrases available for this lesson
+          </Typography>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const startRecording = () => {
     // Stop any playing audio when starting to record
@@ -254,7 +256,7 @@ export default function SpeakingLesson({ lesson, onProgressUpdate }: SpeakingLes
               {/* English Translation */}
               <Paper className="p-4 bg-slate-50 rounded-xl">
                 <Typography variant="h6" className="text-slate-700 font-medium">
-                  "{currentPhrase.english}"
+                  &quot;{currentPhrase.english}&quot;
                 </Typography>
               </Paper>
 

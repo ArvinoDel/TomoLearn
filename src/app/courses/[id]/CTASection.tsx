@@ -6,6 +6,7 @@ import { PlayArrow as PlayArrowIcon } from '@mui/icons-material';
 import Link from 'next/link';
 
 interface CTASectionProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   course: any;
 }
 
@@ -32,7 +33,7 @@ export default function CTASection({ course }: CTASectionProps) {
               </h2>
               
               <p className="text-xl text-gray-300 leading-relaxed">
-                Join thousands of successful students who've transformed their language skills with our AI-powered learning system.
+                Join thousands of successful students who&apos;ve transformed their language skills with our AI-powered learning system.
               </p>
             </div>
 

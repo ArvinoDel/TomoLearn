@@ -4,6 +4,7 @@
 import { Card, CardContent, Chip, LinearProgress } from '@mui/material';
 
 interface CourseOverviewProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   course: any;
 }
 
@@ -110,7 +111,7 @@ export default function CourseOverview({ course }: CourseOverviewProps) {
 
                 {/* Skills Tags */}
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">Skills You'll Master</h4>
+                  <h4 className="font-semibold text-gray-900 mb-3">Skills You&apos;ll Master</h4>
                   <div className="flex flex-wrap gap-2">
                     {course.skills.map((skill: string, index: number) => (
                       <Chip

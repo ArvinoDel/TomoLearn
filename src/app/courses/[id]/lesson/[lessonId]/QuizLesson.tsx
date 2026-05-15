@@ -6,6 +6,7 @@ import { Card, CardContent, Typography, Button, Radio, RadioGroup, FormControlLa
 import { CheckCircle as CheckIcon, Cancel as CancelIcon, Quiz as QuizIcon } from '@mui/icons-material';
 
 interface QuizLessonProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   lesson: any;
   onProgressUpdate: (progress: number) => void;
 }
